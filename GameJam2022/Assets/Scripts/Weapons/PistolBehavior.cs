@@ -27,6 +27,7 @@ public class PistolBehavior : MonoBehaviour, IShooting
     public void Shoot()
     {
         clock.Reset();
+        Debug.Log("Shoot!");
     }
 
     // Start is called before the first frame update

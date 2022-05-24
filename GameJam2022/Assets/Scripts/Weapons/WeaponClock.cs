@@ -10,12 +10,12 @@ public class WeaponClock
     private Stopwatch timer = new Stopwatch();
     private long lastJitter = 0;
     /// <summary>Tells if the timer is ready for next shot.</summary>
-    public bool Ready { get => (timer.ElapsedMilliseconds + lastJitter) >= Time; }
+    public bool Ready { get => timer.ElapsedMilliseconds >= (Time + lastJitter); }
     /// <summary>Resets the clock, used on trigger.</summary>
     public void Reset()
     {
         lastJitter = (long)Random.Range(0f, Jitter);
-        timer.Reset();
+        timer.Restart();
     }
     /// <summary>Starts the clock.</summary>
     public void Start()
