@@ -25,7 +25,6 @@ public class FlamethrowerBehavior : MonoBehaviour, IShooting
     public void Shoot()
     {
         clock.Reset();
-        throw new System.NotImplementedException();
     }
 
     // Start is called before the first frame update
