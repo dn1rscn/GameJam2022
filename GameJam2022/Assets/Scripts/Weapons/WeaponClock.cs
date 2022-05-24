@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 
 /// <summary>
@@ -8,8 +7,22 @@ using UnityEngine;
 /// </summary>
 public class WeaponClock
 {
-    public bool Ready { get; }
-    public void Reset() { }
-    public float Time { get; set; } = 1f;
+    private Stopwatch timer = new Stopwatch();
+    private long lastJitter = 0;
+    public bool Ready { get => (timer.ElapsedMilliseconds + lastJitter) >= Time; }
+    public void Reset()
+    {
+        lastJitter = (long)Random.Range(0f, Jitter);
+        timer.Reset();
+    }
+    public void Start()
+    {
+        timer.Start();
+    }
+    public void Stop()
+    {
+        timer.Stop();
+    }
+    public long Time { get; set; } = 1000;
     public float Jitter { get; set; } = 0f;
 }
