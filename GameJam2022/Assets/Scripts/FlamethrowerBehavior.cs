@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>Displays flamethrower properties</summary>
 public class FlamethrowerBehavior : MonoBehaviour, IShooting
 {
     public float

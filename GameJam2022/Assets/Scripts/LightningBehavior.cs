@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+///   ピカチュウみたいね？　ピカちゃんは凄くピカピカ✨！
+///   後で、雷⚡ができった…
+/// </summary>
 public class LightningBehavior : MonoBehaviour, IShooting
 {
     public int

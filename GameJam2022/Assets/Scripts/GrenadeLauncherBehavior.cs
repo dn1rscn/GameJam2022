@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>Displays grenade launcher properties</summary>
 public class GrenadeLauncherBehavior : MonoBehaviour, IShooting
 {
     public int

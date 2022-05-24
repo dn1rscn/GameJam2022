@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>Displays pistol properties</summary>
 public class PistolBehavior : MonoBehaviour, IShooting
 {
     public int
