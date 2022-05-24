@@ -32,8 +32,8 @@ public class PistolBehavior : MonoBehaviour, IShooting
     // Start is called before the first frame update
     void Start()
     {
-        clock.Start();
         clock.Jitter = 4f;
+        clock.Start();
     }
 
     // Update is called once per frame

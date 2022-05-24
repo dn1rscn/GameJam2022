@@ -21,6 +21,7 @@ public class WeaponClock
     public void Start()
     {
         timer.Start();
+        Reset();
     }
     /// <summary>Stops the clock.</summary>
     public void Stop()
