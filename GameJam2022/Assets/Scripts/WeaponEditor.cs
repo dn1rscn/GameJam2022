@@ -49,12 +49,16 @@ public class WeaponEditor : Editor
     /// </summary>
     private void SerializeFields<T>()
     {
-        var fields = typeof(T).GetFields().Select(f => f.Name);
         var weapon = serializedObject.FindProperty("weapon");
         var reference = weapon.objectReferenceValue;
         var current = new SerializedObject(reference);
-        foreach (var name in fields)
-            EditorGUILayout.PropertyField(current.FindProperty(name));
+        typeof(T)
+            .GetFields()
+            .Select(f => f.Name)
+            .Select(n => current.FindProperty(n))
+            .Where(f => f != null)
+            .ToList()
+            .ForEach(f => EditorGUILayout.PropertyField(f));
     }
 
     /// <summary>Displays pistol properties</summary>
