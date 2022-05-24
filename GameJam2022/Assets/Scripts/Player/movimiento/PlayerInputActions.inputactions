@@ -24,13 +24,31 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Giro",
-                    "type": "Value",
-                    "id": "6dfe5f5f-7b45-4560-9875-0a2e598b704e",
-                    "expectedControlType": "",
+                    "name": "Correr",
+                    "type": "Button",
+                    "id": "42fbd1b8-0800-4695-aa49-7c8a5bce8114",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": true
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Accion",
+                    "type": "Button",
+                    "id": "056b417f-5acb-4538-a908-fa5963ed4f06",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "esquivar",
+                    "type": "Button",
+                    "id": "2bee1349-8371-41a1-853c-ca8a8d88316c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -114,7 +132,7 @@
                 {
                     "name": "",
                     "id": "9e95760d-120d-4609-8031-17b60dea82f6",
-                    "path": "<Gamepad>/rightTrigger",
+                    "path": "<Gamepad>/rightShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": "Mando",
@@ -124,23 +142,67 @@
                 },
                 {
                     "name": "",
-                    "id": "3454e186-c688-4b2c-acac-7a19c8635427",
-                    "path": "<Gamepad>/rightStick",
+                    "id": "b7c47cd9-c83f-4658-862a-aa5330ffd05b",
+                    "path": "<Keyboard>/shift",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Mando",
-                    "action": "Giro",
+                    "groups": "Teclado/Raton",
+                    "action": "Correr",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "8ee663f3-2050-41e2-9409-7c58973ccc2e",
-                    "path": "<Mouse>/delta",
+                    "id": "920f8cac-1ec5-4a7c-9041-0ca8efdf4a22",
+                    "path": "<Gamepad>/leftStickPress",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mando",
+                    "action": "Correr",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ce372b6e-e578-4250-91b8-338bc477bfd4",
+                    "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": "Teclado/Raton",
-                    "action": "Giro",
+                    "action": "Accion",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "add6c66c-c164-4407-adb2-163fbe6d20b6",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mando",
+                    "action": "Accion",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7f4abc41-bad1-4834-b383-19e68a4cf5eb",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Teclado/Raton",
+                    "action": "esquivar",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4f0ff917-72cc-44e7-962e-92b1349fc85e",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mando",
+                    "action": "esquivar",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

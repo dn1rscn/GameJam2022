@@ -46,13 +46,31 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Giro"",
-                    ""type"": ""Value"",
-                    ""id"": ""6dfe5f5f-7b45-4560-9875-0a2e598b704e"",
-                    ""expectedControlType"": """",
+                    ""name"": ""Correr"",
+                    ""type"": ""Button"",
+                    ""id"": ""42fbd1b8-0800-4695-aa49-7c8a5bce8114"",
+                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": true
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Accion"",
+                    ""type"": ""Button"",
+                    ""id"": ""056b417f-5acb-4538-a908-fa5963ed4f06"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""esquivar"",
+                    ""type"": ""Button"",
+                    ""id"": ""2bee1349-8371-41a1-853c-ca8a8d88316c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -136,7 +154,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""9e95760d-120d-4609-8031-17b60dea82f6"",
-                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Mando"",
@@ -146,23 +164,67 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""3454e186-c688-4b2c-acac-7a19c8635427"",
-                    ""path"": ""<Gamepad>/rightStick"",
+                    ""id"": ""b7c47cd9-c83f-4658-862a-aa5330ffd05b"",
+                    ""path"": ""<Keyboard>/shift"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Mando"",
-                    ""action"": ""Giro"",
+                    ""groups"": ""Teclado/Raton"",
+                    ""action"": ""Correr"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""8ee663f3-2050-41e2-9409-7c58973ccc2e"",
-                    ""path"": ""<Mouse>/delta"",
+                    ""id"": ""920f8cac-1ec5-4a7c-9041-0ca8efdf4a22"",
+                    ""path"": ""<Gamepad>/leftStickPress"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mando"",
+                    ""action"": ""Correr"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ce372b6e-e578-4250-91b8-338bc477bfd4"",
+                    ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Teclado/Raton"",
-                    ""action"": ""Giro"",
+                    ""action"": ""Accion"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""add6c66c-c164-4407-adb2-163fbe6d20b6"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mando"",
+                    ""action"": ""Accion"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7f4abc41-bad1-4834-b383-19e68a4cf5eb"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Teclado/Raton"",
+                    ""action"": ""esquivar"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4f0ff917-72cc-44e7-962e-92b1349fc85e"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mando"",
+                    ""action"": ""esquivar"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -203,7 +265,9 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Movimiento = m_Player.FindAction("Movimiento", throwIfNotFound: true);
         m_Player_Disparo = m_Player.FindAction("Disparo", throwIfNotFound: true);
-        m_Player_Giro = m_Player.FindAction("Giro", throwIfNotFound: true);
+        m_Player_Correr = m_Player.FindAction("Correr", throwIfNotFound: true);
+        m_Player_Accion = m_Player.FindAction("Accion", throwIfNotFound: true);
+        m_Player_esquivar = m_Player.FindAction("esquivar", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -265,14 +329,18 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
     private IPlayerActions m_PlayerActionsCallbackInterface;
     private readonly InputAction m_Player_Movimiento;
     private readonly InputAction m_Player_Disparo;
-    private readonly InputAction m_Player_Giro;
+    private readonly InputAction m_Player_Correr;
+    private readonly InputAction m_Player_Accion;
+    private readonly InputAction m_Player_esquivar;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
         public PlayerActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Movimiento => m_Wrapper.m_Player_Movimiento;
         public InputAction @Disparo => m_Wrapper.m_Player_Disparo;
-        public InputAction @Giro => m_Wrapper.m_Player_Giro;
+        public InputAction @Correr => m_Wrapper.m_Player_Correr;
+        public InputAction @Accion => m_Wrapper.m_Player_Accion;
+        public InputAction @esquivar => m_Wrapper.m_Player_esquivar;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -288,9 +356,15 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @Disparo.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDisparo;
                 @Disparo.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDisparo;
                 @Disparo.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDisparo;
-                @Giro.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnGiro;
-                @Giro.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnGiro;
-                @Giro.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnGiro;
+                @Correr.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCorrer;
+                @Correr.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCorrer;
+                @Correr.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCorrer;
+                @Accion.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAccion;
+                @Accion.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAccion;
+                @Accion.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAccion;
+                @esquivar.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEsquivar;
+                @esquivar.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEsquivar;
+                @esquivar.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEsquivar;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -301,9 +375,15 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @Disparo.started += instance.OnDisparo;
                 @Disparo.performed += instance.OnDisparo;
                 @Disparo.canceled += instance.OnDisparo;
-                @Giro.started += instance.OnGiro;
-                @Giro.performed += instance.OnGiro;
-                @Giro.canceled += instance.OnGiro;
+                @Correr.started += instance.OnCorrer;
+                @Correr.performed += instance.OnCorrer;
+                @Correr.canceled += instance.OnCorrer;
+                @Accion.started += instance.OnAccion;
+                @Accion.performed += instance.OnAccion;
+                @Accion.canceled += instance.OnAccion;
+                @esquivar.started += instance.OnEsquivar;
+                @esquivar.performed += instance.OnEsquivar;
+                @esquivar.canceled += instance.OnEsquivar;
             }
         }
     }
@@ -330,6 +410,8 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
     {
         void OnMovimiento(InputAction.CallbackContext context);
         void OnDisparo(InputAction.CallbackContext context);
-        void OnGiro(InputAction.CallbackContext context);
+        void OnCorrer(InputAction.CallbackContext context);
+        void OnAccion(InputAction.CallbackContext context);
+        void OnEsquivar(InputAction.CallbackContext context);
     }
 }
