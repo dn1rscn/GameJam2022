@@ -44,6 +44,8 @@ public class WeaponEditor : Editor
         EditorGUILayout.PropertyField(serializedObject.FindProperty("grenadeBody"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("flamerBody"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("lightningBody"));
+        EditorGUILayout.Separator();
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("startShooting"));
         serializedObject.ApplyModifiedProperties();
     }
 

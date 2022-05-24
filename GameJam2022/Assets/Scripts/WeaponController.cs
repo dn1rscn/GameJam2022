@@ -18,6 +18,9 @@ public class WeaponController : MonoBehaviour
     [SerializeField]
     public GameObject pistolBody, flamerBody, grenadeBody, lightningBody;
 
+    [SerializeField]
+    public bool startShooting;
+
     IEnumerable<GameObject> Bodies
     {
         get
