@@ -15,8 +15,16 @@ public class FlamethrowerBehavior : MonoBehaviour, IShooting
         minPetrol = 10f,
         tankSize = 200f;
 
+    private WeaponClock clock = new WeaponClock();
+
+    public bool CanShoot()
+    {
+        return clock.Ready;
+    }
+
     public void Shoot()
     {
+        clock.Reset();
         throw new System.NotImplementedException();
     }
 

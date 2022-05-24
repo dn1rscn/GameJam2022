@@ -17,8 +17,16 @@ public class PistolBehavior : MonoBehaviour, IShooting
         spreadRatio = 1f,
         damagePerShot = 10f;
 
+    private WeaponClock clock = new WeaponClock();
+
+    public bool CanShoot()
+    {
+        return clock.Ready;
+    }
+
     public void Shoot()
     {
+        clock.Reset();
         throw new System.NotImplementedException();
     }
 

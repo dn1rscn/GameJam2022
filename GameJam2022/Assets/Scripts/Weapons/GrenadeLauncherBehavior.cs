@@ -19,8 +19,16 @@ public class GrenadeLauncherBehavior : MonoBehaviour, IShooting
         bounciness = 1f,
         detonationTime = 4f;
 
+    private WeaponClock clock = new WeaponClock();
+
+    public bool CanShoot()
+    {
+        return clock.Ready;
+    }
+
     public void Shoot()
     {
+        clock.Reset();
         throw new System.NotImplementedException();
     }
 

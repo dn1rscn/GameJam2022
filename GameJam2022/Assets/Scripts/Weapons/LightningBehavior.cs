@@ -22,8 +22,16 @@ public class LightningBehavior : MonoBehaviour, IShooting
         falloff = 10f,
         disableTime = 4f;
 
+    private WeaponClock clock = new WeaponClock();
+
+    public bool CanShoot()
+    {
+        return clock.Ready;
+    }
+
     void IShooting.Shoot()
     {
+        clock.Reset();
         throw new System.NotImplementedException();
     }
 
