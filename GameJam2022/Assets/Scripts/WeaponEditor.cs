@@ -18,7 +18,6 @@ public class WeaponEditor : Editor
     {
         controller = (WeaponController)target;
         variant = (WeaponType)EditorGUILayout.EnumPopup("Variant", variant);
-
         // Create a space to separate this enum popup from the other variables 
         EditorGUILayout.Space();
         switch (variant)
@@ -40,6 +39,11 @@ public class WeaponEditor : Editor
                 DisplayPikachu();
                 break;
         }
+        EditorGUILayout.Separator();
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("pistolBody"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("grenadeBody"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("flamerBody"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("lightningBody"));
         serializedObject.ApplyModifiedProperties();
     }
 

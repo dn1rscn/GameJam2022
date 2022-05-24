@@ -71,6 +71,7 @@ public class PistolType : Weapon
         maxRounds = 20,
         bulletsPerShot = 1;
     public float
+        bulletSpeed = 8f,
         fireRate = 2.2f,
         spreadRatio = 1f,
         damagePerShot = 10f;
@@ -117,6 +118,9 @@ public class LightningType : Weapon
         maxClip = 10;
     public float
         baseDamage = 100f,
+        radius = 50f,
+        windupTime = 1f,
+        coolDownTime = 2f,
         falloff = 10f,
         disableTime = 4f;
 }
