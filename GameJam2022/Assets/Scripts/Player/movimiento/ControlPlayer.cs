@@ -5,12 +5,16 @@ using UnityEngine.InputSystem;
 
 public class ControlPlayer : MonoBehaviour
 {
+    public CharacterController controller;
     private Rigidbody playerRigidbody;
     private PlayerInput playerInput;
+    public Transform cam;
 
     Vector2 movimiento;
     Vector2 rotate;
     public float velocidad;
+    public float turnSmoothTime = 0.1f;
+    float turnSmoothVelocity;
     
     private void Awake()
     {
@@ -32,11 +36,17 @@ public class ControlPlayer : MonoBehaviour
 
     void Update()
     {
-        Vector3 m = new Vector3(movimiento.x,0.0f,movimiento.y)*velocidad;
-        playerRigidbody.velocity = new Vector3(m.x,0,m.z);
+        Vector3 m = new Vector3(movimiento.x,0.0f,movimiento.y).normalized;
 
-        Vector2 r = new Vector2(0f, -rotate.x) * 100f * Time.deltaTime;
-        transform.Rotate(r, Space.World);
+    
+        if(m.magnitude >= 0.1f)
+        {
+            float targetAngle = Mathf.Atan2(m.x, m.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
+            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y,targetAngle,ref turnSmoothVelocity,turnSmoothTime);
+            transform.rotation = Quaternion.Euler(0f,angle,0f);
+            Vector3 moveDir = Quaternion.Euler(0f,targetAngle,0f)*Vector3.forward;
+            controller.Move(moveDir.normalized*velocidad*Time.deltaTime);
+        }
     }
 
     void Disparar()
