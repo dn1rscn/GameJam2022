@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class LootSystem : MonoBehaviour
 {
+    public ControlPlayer player;
     //public float totalPorcentaje = 100;
     [System.Serializable]
     public class DropCurrency
     {
         public string name;
-        public GameObject item;
+        //public GameObject item;
+        public int municion;
         [Range(0,100)]
         public int dropRarity;
     }
@@ -46,6 +48,7 @@ public class LootSystem : MonoBehaviour
                 {
                     //Instantiate(LootTable[j].item, transform.position, Quaternion.identity);
                     print(LootTable[j].name);
+                    player.municion = LootTable[j].municion;
                     return;
                 }
                 randomValue -= LootTable[j].dropRarity;

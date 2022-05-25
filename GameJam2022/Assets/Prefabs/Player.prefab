@@ -355,7 +355,7 @@ MonoBehaviour:
   apuntar: 0
   esquivar: 0
   velocidad: 10
-  velocidadGiro: 150
+  velocidadGiro: 200
   velocidadEsquivar: 40
   arma: {fileID: 1897407325777312506}
   energia: 0

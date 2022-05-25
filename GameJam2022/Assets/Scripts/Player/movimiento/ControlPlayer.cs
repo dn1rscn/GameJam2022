@@ -11,6 +11,7 @@ public class ControlPlayer : MonoBehaviour
     private PlayerInput playerInput;
     public Transform cam;
     public CinemachineFreeLook thirdPersonCamera;
+    LootSystem lootSystem;
 
     Vector2 movimiento, rotate;
     public bool disparo,apuntar,esquivar;
@@ -20,7 +21,12 @@ public class ControlPlayer : MonoBehaviour
     public GameObject arma;
     [Header("recolectables")]
     public int energia;
-    
+    public int municion;
+
+    private void Start()
+    {
+        Cursor.visible = false;
+    }
     private void Awake()
     {
         print("iniciamos");
@@ -44,7 +50,7 @@ public class ControlPlayer : MonoBehaviour
         playerInputActions.Player.Correr.canceled += ctx => velocidad=velocidad/2;
 
         playerInputActions.Player.esquivar.performed += ctx => Esquivar();
-        //playerInputActions.Player.Correr.performed += ctx =>
+
         playerInputActions.Player.Apuntar.performed += ctx => apuntar = true;
         playerInputActions.Player.Apuntar.canceled += ctx => apuntar = false;
     }
@@ -63,9 +69,13 @@ public class ControlPlayer : MonoBehaviour
         
         //DISPARO
         if(disparo&&apuntar)
-        { 
-            print("DISPARO!!!");
-            //TODO:hacer la llamada a la función de disparo
+        {
+            if (municion <= 0) Debug.LogError("NO TIENES MUNICION");
+            else 
+            {
+                print("DISPARO!!!");
+                //TODO:hacer la llamada a la función de disparo
+            }
         }
 
         //ESQUIVAR
@@ -79,9 +89,6 @@ public class ControlPlayer : MonoBehaviour
 
     void Esquivar()
     {
-        //playerRigidbody.AddForce(playerRigidbody.velocity*fuerza,ForceMode.Acceleration);
-        /*Vector3 me = new Vector3(movimiento.x, 0.0f, movimiento.y) * velocidadEsquivar * Time.deltaTime;
-        transform.Translate(me, Space.Self);*/
         esquivar = true;
         animatorPlayer.Play("Anim_PruebaEsquivar");
     }
@@ -101,6 +108,7 @@ public class ControlPlayer : MonoBehaviour
                 energia++;
                 break;
             case "Trigger Municion":
+                lootSystem.calculateLoot();
                 Destroy(other.gameObject);
                 break;
 
