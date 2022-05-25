@@ -568,7 +568,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1401013676799017441, guid: d223ace760dbd884aae633e9d3ba9cd2, type: 3}
       propertyPath: fireRate
-      value: 2
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 1401013676799017441, guid: d223ace760dbd884aae633e9d3ba9cd2, type: 3}
       propertyPath: bulletSpeed
