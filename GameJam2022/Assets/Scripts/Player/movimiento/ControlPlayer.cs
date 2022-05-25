@@ -13,12 +13,13 @@ public class ControlPlayer : MonoBehaviour
     public CinemachineFreeLook thirdPersonCamera;
 
     Vector2 movimiento, rotate;
-    public bool disparo,apuntar;
-    public float velocidad, velocidadGiro, turnSmoothTime = 0.1f;
-    float turnSmoothVelocity;
-    public float fuerza;
+    public bool disparo,apuntar,esquivar;
+    public float velocidad, velocidadGiro, velocidadEsquivar;
+    //public float fuerza;
 
     public GameObject arma;
+    [Header("recolectables")]
+    public int energia;
     
     private void Awake()
     {
@@ -51,22 +52,11 @@ public class ControlPlayer : MonoBehaviour
     void Update()
     {
         //MOVIMIENTO
-        Vector3 moveDir = Vector3.zero;
         Vector3 m = new Vector3(movimiento.x,0.0f,movimiento.y) * velocidad * Time.deltaTime;
         Vector3 d = new Vector2(0, rotate.x) * velocidadGiro*Time.deltaTime;
         transform.Rotate(d, Space.World);
-
-        /*if(m.magnitude >= 0.1f)
-        {
-            float targetAngle = Mathf.Atan2(m.x, m.z) * Mathf.Rad2Deg + transform.eulerAngles.y;
-            //float targetAngle = Mathf.Atan2(d.x, d.z) * Mathf.Rad2Deg;
-            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y,targetAngle,ref turnSmoothVelocity,turnSmoothTime);
-            playerRigidbody.rotation = Quaternion.Euler(0f,d.y,0f);
-            moveDir = Quaternion.Euler(0f,targetAngle,0f)*Vector3.forward;
-            //controller.Move(moveDir.normalized*velocidad*Time.deltaTime);
-        //}
-        playerRigidbody.velocity=new Vector3(moveDir.x,0,moveDir.z).normalized*velocidad;*/
         transform.Translate(m, Space.Self);
+
         //APUNTAR
         arma.SetActive(apuntar);
          
@@ -77,11 +67,46 @@ public class ControlPlayer : MonoBehaviour
             print("DISPARO!!!");
             //TODO:hacer la llamada a la función de disparo
         }
+
+        //ESQUIVAR
+        if (esquivar)
+        {
+            Vector3 me = new Vector3(movimiento.x, 0.0f, movimiento.y) * velocidadEsquivar * Time.deltaTime;
+            transform.Translate(me, Space.Self);
+            Invoke("esquivarOff", 0.2f);
+        }
     }
 
     void Esquivar()
     {
-        playerRigidbody.AddForce(playerRigidbody.velocity*fuerza,ForceMode.Acceleration);
+        //playerRigidbody.AddForce(playerRigidbody.velocity*fuerza,ForceMode.Acceleration);
+        /*Vector3 me = new Vector3(movimiento.x, 0.0f, movimiento.y) * velocidadEsquivar * Time.deltaTime;
+        transform.Translate(me, Space.Self);*/
+        esquivar = true;
         animatorPlayer.Play("Anim_PruebaEsquivar");
+    }
+    void esquivarOff()
+    {
+        esquivar = false;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        print(other.tag);
+        switch(other.tag)
+        {
+            //RECOLECTABLES
+            case "Trigger Energia"://RECOGEMOS ENERGIA
+                Destroy(other.gameObject);
+                energia++;
+                break;
+            case "Trigger Municion":
+                Destroy(other.gameObject);
+                break;
+
+            //OBJECTOS
+            case "Trigger Puerta":
+                break;
+        }
     }
 }
