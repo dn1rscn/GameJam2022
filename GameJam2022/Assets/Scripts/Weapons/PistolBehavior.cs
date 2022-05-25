@@ -37,7 +37,9 @@ public class PistolBehavior : MonoBehaviour, IShooting
         script.Lifetime = bulletLifetime;
         script.BaseDamage = damagePerShot;
         bullet.SetActive(true);
-        bullet.GetComponent<Rigidbody>().AddForce(dir);
+        var phys = bullet.GetComponent<Rigidbody>();
+        phys.AddForce(dir);
+        phys.freezeRotation = true;
     }
 
     // Start is called before the first frame update
