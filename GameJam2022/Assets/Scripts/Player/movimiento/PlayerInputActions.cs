@@ -71,6 +71,24 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Apuntar"",
+                    ""type"": ""Button"",
+                    ""id"": ""1232346d-6c53-4ef6-9e20-e29c3badc4a2"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Giro"",
+                    ""type"": ""Value"",
+                    ""id"": ""7d8a735d-18f1-49a9-8ded-a84aa63cc605"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -154,7 +172,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""9e95760d-120d-4609-8031-17b60dea82f6"",
-                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Mando"",
@@ -227,6 +245,50 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""action"": ""esquivar"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4536b5ca-ee20-4ab9-8cc7-e980ebea87ee"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Teclado/Raton"",
+                    ""action"": ""Apuntar"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""928d1051-4f3d-4297-80d0-7df45a84f2d8"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Apuntar"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2238d63f-6780-4336-afd7-c04088992cdb"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Teclado/Raton"",
+                    ""action"": ""Giro"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7b2b9a36-5b91-471b-91fd-14d04a83512d"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mando"",
+                    ""action"": ""Giro"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -268,6 +330,8 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         m_Player_Correr = m_Player.FindAction("Correr", throwIfNotFound: true);
         m_Player_Accion = m_Player.FindAction("Accion", throwIfNotFound: true);
         m_Player_esquivar = m_Player.FindAction("esquivar", throwIfNotFound: true);
+        m_Player_Apuntar = m_Player.FindAction("Apuntar", throwIfNotFound: true);
+        m_Player_Giro = m_Player.FindAction("Giro", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -332,6 +396,8 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Correr;
     private readonly InputAction m_Player_Accion;
     private readonly InputAction m_Player_esquivar;
+    private readonly InputAction m_Player_Apuntar;
+    private readonly InputAction m_Player_Giro;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -341,6 +407,8 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         public InputAction @Correr => m_Wrapper.m_Player_Correr;
         public InputAction @Accion => m_Wrapper.m_Player_Accion;
         public InputAction @esquivar => m_Wrapper.m_Player_esquivar;
+        public InputAction @Apuntar => m_Wrapper.m_Player_Apuntar;
+        public InputAction @Giro => m_Wrapper.m_Player_Giro;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -365,6 +433,12 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @esquivar.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEsquivar;
                 @esquivar.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEsquivar;
                 @esquivar.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEsquivar;
+                @Apuntar.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnApuntar;
+                @Apuntar.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnApuntar;
+                @Apuntar.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnApuntar;
+                @Giro.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnGiro;
+                @Giro.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnGiro;
+                @Giro.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnGiro;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -384,6 +458,12 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @esquivar.started += instance.OnEsquivar;
                 @esquivar.performed += instance.OnEsquivar;
                 @esquivar.canceled += instance.OnEsquivar;
+                @Apuntar.started += instance.OnApuntar;
+                @Apuntar.performed += instance.OnApuntar;
+                @Apuntar.canceled += instance.OnApuntar;
+                @Giro.started += instance.OnGiro;
+                @Giro.performed += instance.OnGiro;
+                @Giro.canceled += instance.OnGiro;
             }
         }
     }
@@ -413,5 +493,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         void OnCorrer(InputAction.CallbackContext context);
         void OnAccion(InputAction.CallbackContext context);
         void OnEsquivar(InputAction.CallbackContext context);
+        void OnApuntar(InputAction.CallbackContext context);
+        void OnGiro(InputAction.CallbackContext context);
     }
 }
