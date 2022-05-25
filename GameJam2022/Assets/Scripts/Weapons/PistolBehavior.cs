@@ -5,6 +5,7 @@ using UnityEngine;
 /// <summary>Displays pistol properties</summary>
 public class PistolBehavior : MonoBehaviour, IShooting
 {
+    public GameObject projectile;
     public int
         maxClip = 50,
         minRounds = 4,
@@ -12,10 +13,12 @@ public class PistolBehavior : MonoBehaviour, IShooting
         bulletsPerShot = 1;
 
     public float
-        bulletSpeed = 8f,
-        fireRate = 2.2f,
-        spreadRatio = 1f,
-        damagePerShot = 10f;
+        bulletSpeed = 1000f,
+        fireRate = 2f,
+        fireRateJitter = 0f,
+        spreadCone = 0f,
+        damagePerShot = 10f,
+        bulletLifetime = 5000f;
 
     private WeaponClock clock = new WeaponClock();
 
@@ -27,13 +30,21 @@ public class PistolBehavior : MonoBehaviour, IShooting
     public void Shoot()
     {
         clock.Reset();
-        Debug.Log("Shoot!");
+        var dir = -transform.forward * bulletSpeed;
+        var orig = projectile.transform;
+        var bullet = Instantiate(projectile, orig.position, orig.rotation);
+        var script = bullet.GetComponent<ProjectileBehavior>();
+        script.Lifetime = bulletLifetime;
+        script.BaseDamage = damagePerShot;
+        bullet.SetActive(true);
+        bullet.GetComponent<Rigidbody>().AddForce(dir);
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        clock.Jitter = 4f;
+        clock.Time = (long)((1d / fireRate) * 1000d);
+        clock.Jitter = fireRateJitter * 1000f;
         clock.Start();
     }
 

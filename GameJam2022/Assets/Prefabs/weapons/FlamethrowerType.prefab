@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 2484798497042419615}
   - component: {fileID: 322845662032607012}
   - component: {fileID: 3928742157471112405}
-  - component: {fileID: 1572002395373455824}
   m_Layer: 0
   m_Name: Cylinder (1)
   m_TagString: Untagged
@@ -27,8 +26,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1841681080358456211}
   m_LocalRotation: {x: -0.70710665, y: -0, z: -0, w: 0.70710695}
-  m_LocalPosition: {x: 0.000000026342, y: -0.518, z: -1.257}
-  m_LocalScale: {x: 0.55806, y: 0.9253751, z: 0.55806}
+  m_LocalPosition: {x: 0.0000000067841, y: -0.1334, z: -0.76266}
+  m_LocalScale: {x: 0.14372276, y: 0.2383211, z: 0.14372276}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5321251571524607242}
@@ -84,20 +83,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &1572002395373455824
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1841681080358456211}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5000001
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
 --- !u!1 &2620579856974444688
 GameObject:
   m_ObjectHideFlags: 0
@@ -109,7 +94,6 @@ GameObject:
   - component: {fileID: 7118127284240049767}
   - component: {fileID: 7418623369767198480}
   - component: {fileID: 1357213453811843473}
-  - component: {fileID: 4724292378845479902}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
@@ -125,8 +109,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2620579856974444688}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalPosition: {x: 0, y: 0, z: -0.43893}
+  m_LocalScale: {x: 0.51508, y: 0.51508, z: 0.51508}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5321251571524607242}
@@ -182,19 +166,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!135 &4724292378845479902
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2620579856974444688}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &4979675339773415709
 GameObject:
   m_ObjectHideFlags: 0
@@ -206,7 +177,6 @@ GameObject:
   - component: {fileID: 649310167939599825}
   - component: {fileID: 5364018921176878563}
   - component: {fileID: 7071990605131280428}
-  - component: {fileID: 5554517552618080220}
   m_Layer: 0
   m_Name: Cylinder
   m_TagString: Untagged
@@ -222,8 +192,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4979675339773415709}
   m_LocalRotation: {x: -0.70710635, y: -0, z: -0, w: 0.7071073}
-  m_LocalPosition: {x: 0, y: 0.0000013113021, z: -1.0000001}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0.00000033771, z: -0.69647}
+  m_LocalScale: {x: 0.25754, y: 0.25754, z: 0.25754}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5321251571524607242}
@@ -279,20 +249,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &5554517552618080220
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4979675339773415709}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5000001
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
 --- !u!1 &5881325621486094241
 GameObject:
   m_ObjectHideFlags: 0
@@ -340,3 +296,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: daed49fce8720d542a33e89bced556db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spreadAngle: 20
+  damagePerSecond: 4
+  distance: 10
+  particlesPerSecond: 10
+  particleSpeed: 5
+  maxPetrol: 100
+  minPetrol: 10
+  tankSize: 200
