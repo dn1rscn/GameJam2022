@@ -8,7 +8,8 @@ public class ProjectileBehavior : MonoBehaviour
     private Stopwatch timer = new Stopwatch();
 
     public float Lifetime { set; get; } = 1000f;
-    public float BaseDamage { get; set; } = 0f;
+    public float BaseDamage { get; set; } = 1f;
+    public Damage Damage { get => new Damage(BaseDamage, Damage.Type.KINETIC); }
 
     private GameObject AliveEffects, DeadEffects;
     private bool dead = false;
@@ -39,5 +40,10 @@ public class ProjectileBehavior : MonoBehaviour
         var rigid = GetComponent<Rigidbody>();
         rigid.velocity = new Vector3(0, 0, 0);
         rigid.detectCollisions = false;
+        var collided = col.GetComponentInParent<IDamageAcceptor>();
+        if (collided != null)
+        {
+            collided.TakeDamage(Damage);
+        }
     }
 }
