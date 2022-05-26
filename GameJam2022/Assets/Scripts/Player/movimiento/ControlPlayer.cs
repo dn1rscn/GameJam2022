@@ -10,7 +10,7 @@ public class ControlPlayer : MonoBehaviour
     public Animator animatorPlayer;
     private Rigidbody playerRigidbody;
     private PlayerInput playerInput;
-    public Transform cam;
+    public Camera cam;
     public CinemachineFreeLook thirdPersonCamera;
     LootSystem lootSystem;
 
@@ -18,8 +18,13 @@ public class ControlPlayer : MonoBehaviour
     public bool disparo,apuntar,esquivar,mouse;
     public float velocidad, velocidadGiro, velocidadEsquivar;
     float turnSmothTime = 0.1f,turnSmoothVelocity;
+    float camRayLength = 100f;
+    int floorMask;
+
+    public Transform firePoint;
     //public float fuerza;
 
+    public LineRenderer lineApuntar;
     public GameObject arma;
     [Header("recolectables")]
     public int energia;
@@ -27,10 +32,12 @@ public class ControlPlayer : MonoBehaviour
 
     private void Start()
     {
-        Cursor.visible = false;
+        //ursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
     }
     private void Awake()
     {
+        floorMask = LayerMask.GetMask("Floor");
         print("iniciamos");
         playerRigidbody = GetComponent<Rigidbody>();
         playerInput = GetComponent<PlayerInput>();
@@ -91,20 +98,37 @@ public class ControlPlayer : MonoBehaviour
         //giro al apuntar
         if (apuntar)
         {
+            /*RaycastHit2D hitInfo = Physics2D.Raycast(firePoint.position, firePoint.forward);
+            if(hitInfo)
+            {
+                lineApuntar.SetPosition(0, firePoint.position);
+                lineApuntar.SetPosition(1, hitInfo.point);
+            }
+            else
+            {
+                lineApuntar.SetPosition(0, firePoint.position);
+                lineApuntar.SetPosition(1, firePoint.position + firePoint.forward * 100);
+            }*/
             if (mouse) //GIRO CON EL MOUSE
             {
-                Vector2 d = new Vector2(0, rotate.x) * velocidadGiro * Time.deltaTime;
-                transform.Rotate(d, Space.World);
+                Ray camRay = cam.ScreenPointToRay(Input.mousePosition);
+                RaycastHit floorHit;
+                if (Physics.Raycast(camRay, out floorHit, camRayLength, floorMask))
+                {
+                    Vector3 playerToMouse = floorHit.point - transform.position;
+                    playerToMouse.y = 0;
+
+                    var rotation = Quaternion.LookRotation(playerToMouse);
+                    playerRigidbody.MoveRotation(rotation);
+                }
             }
             else//GIRO CON EL MANDO
             {
-                Vector2 dirGiro = new Vector2(rotate.x, rotate.y).normalized;// * velocidadGiro * Time.deltaTime;
+                Vector2 dirGiro = new Vector2(rotate.x, rotate.y).normalized;
                 if (dirGiro.magnitude >= 0.1f)
                 {
                     float targetAngleG = Mathf.Atan2(dirGiro.x, dirGiro.y) * Mathf.Rad2Deg;
-                    //Vector2 d = new Vector2(targetAngleG, 0f);
                     transform.rotation = Quaternion.Euler(0f, targetAngleG, 0f);
-                    //transform.Rotate(d, Space.World);
                 }
             }
 
@@ -126,12 +150,12 @@ public class ControlPlayer : MonoBehaviour
         }
 
         //ESQUIVAR
-        if (esquivar)
+        /*if (esquivar)
         {
             Vector3 me = new Vector3(movimiento.x, 0.0f, movimiento.y) * velocidadEsquivar * Time.deltaTime;
             transform.Translate(me, Space.Self);
             Invoke("esquivarOff", 0.2f);
-        }
+        }*/
     }
 
     void Esquivar()

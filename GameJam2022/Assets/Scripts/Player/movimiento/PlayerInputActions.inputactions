@@ -172,7 +172,7 @@
                 {
                     "name": "",
                     "id": "920f8cac-1ec5-4a7c-9041-0ca8efdf4a22",
-                    "path": "<Gamepad>/leftShoulder",
+                    "path": "<Gamepad>/rightShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": "Mando",
