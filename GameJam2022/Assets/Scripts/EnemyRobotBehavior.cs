@@ -6,6 +6,8 @@ interface State
 {
     void Update(EnemyRobotBehavior actor) { }
     void Start(EnemyRobotBehavior actor) { }
+    void TriggerAwake(Collider collider) {}
+    void TriggerHear(Collider collider) {}
     State GoPatrol() { return new Patrol(); }
     State GoDormant() { return new Dormant(); }
     State GoVigilant() { return new Vigilant(); }
@@ -25,6 +27,12 @@ class Dormant : State
         var state = new Patrol();
         state.willSleep = true;
         return state;
+    }
+    void State.TriggerAwake(UnityEngine.Collider collider) {
+
+    }
+    void State.Start(EnemyRobotBehavior actor) {
+        
     }
 }
 
@@ -59,6 +67,7 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     [Header("Intrinsic attributes")]
     private State currentState;
     private GameObject wakeGO, hearGO;
+    private Animator animator;
 
     public void TakeDamage(Damage damage)
     {
@@ -70,6 +79,7 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     {
         wakeGO = transform.Find("AwakeSphere").gameObject;
         hearGO = transform.Find("HearSphere").gameObject;
+        animator = transform.Find("Todas").GetComponent<Animator>();
         switch (initialState)
         {
             case InitialState.Vigilant:
@@ -93,14 +103,16 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
 
     void ITriggerEnterListener.OnTriggerEnter(GameObject source, Collider other)
     {
-        Debug.LogError("FAFAFAFA");
-        // if (source == wakeGO)
-        // {
-        //     Debug.LogWarning($"I SENSE NEAR! you, {other}...");
-        // }
-        // else if (from == hearGO)
-        // {
-        //     Debug.LogWarning($"I hear you, {other}...");
-        // }
+        if (other.tag != "Player") return;
+        if (source == wakeGO)
+        {
+            // Debug.LogWarning($"I SENSE NEAR! you, {other}...");
+            currentState.TriggerAwake(other);
+        }
+        else if (source == hearGO)
+        {
+            // Debug.LogWarning($"I hear you, {other}...");
+            currentState.TriggerHear(other);
+        }
     }
 }
