@@ -31,6 +31,56 @@ public class LightningBehavior : MonoBehaviour, IShooting
         return clock.Ready;
     }
 
+    private HashSet<Collider> electrified = new HashSet<Collider>();
+
+    /// <summary>
+    ///     Recursive function that looks for enemies that can be attacked,
+    ///     in order to chain the lightning bolt.
+    /// </summary>
+    void ChainNextAttack(int left, Vector3 origin)
+    {
+        if (left <= 0) return;
+        var colliders = Physics.OverlapSphere(origin, radius);
+        Collider nearest = null;
+        var lastDist = 0.0f;
+        foreach (var col in colliders)
+        {
+            if (nearest == null)
+            {
+                nearest = col;
+                lastDist = Vector3.Distance(origin, nearest.transform.position);
+                continue;
+            }
+            var dist = Vector3.Distance(origin, col.transform.position);
+            if (dist == 0 || electrified.Contains(col)) continue;
+            if (lastDist > dist)
+            {
+                lastDist = dist;
+                nearest = col;
+            }
+        }
+        if (nearest == null) return;
+        var acceptor = nearest.GetComponentInParent<IDamageAcceptor>();
+        if (acceptor != null)
+        {
+            electrified.Add(nearest);
+            SpawnBeam(origin, nearest.transform.position, acceptor);
+            ChainNextAttack(left - 1, nearest.transform.position);
+        }
+    }
+
+    void SpawnBeam(Vector3 from, Vector3 to, IDamageAcceptor target)
+    {
+        var beam = Instantiate(beamPhantasm, transform.position, transform.rotation);
+        beam.GetComponent<BeamPhantasmBehavior>().Radius = radius;
+        beam.SetActive(true);
+        var start = beam.transform.Find("Start").gameObject;
+        var end = beam.transform.Find("End").gameObject;
+        start.transform.position = from;
+        end.transform.position = to;
+        target.TakeDamage(new Damage(baseDamage, Damage.Type.ELECTRIC));
+    }
+
     void IShooting.Shoot()
     {
         clock.Reset();
@@ -41,13 +91,9 @@ public class LightningBehavior : MonoBehaviour, IShooting
             var script = hit.collider.gameObject.GetComponentInParent<IDamageAcceptor>();
             if (script != null)
             {
-                var beam = Instantiate(beamPhantasm, transform.position, transform.rotation);
-                beam.SetActive(true);
-                var start = beam.transform.Find("Start").gameObject;
-                var end = beam.transform.Find("End").gameObject;
-                start.transform.position = transform.position + -transform.forward * beamOffset;
-                end.transform.position = hit.point;
-                script.TakeDamage(new Damage(baseDamage, Damage.Type.ELECTRIC));
+                SpawnBeam(transform.position + -transform.forward * beamOffset, hit.point, script);
+                ChainNextAttack(maxEnemies - 1, hit.collider.transform.position);
+                electrified.Clear();
             }
         }
     }

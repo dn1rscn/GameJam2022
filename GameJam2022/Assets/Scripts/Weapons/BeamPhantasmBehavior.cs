@@ -3,7 +3,8 @@ using UnityEngine;
 
 public class BeamPhantasmBehavior : MonoBehaviour
 {
-    public long dieTime = 2000;
+    public float dieTime = 510f;
+    public float Radius { get; set; } = 10f;
     private GameObject start, end, line;
     private LineRenderer lineRenderer;
     private Stopwatch time = new Stopwatch();
@@ -22,9 +23,18 @@ public class BeamPhantasmBehavior : MonoBehaviour
     {
         lineRenderer.SetPosition(0, start.transform.localPosition);
         lineRenderer.SetPosition(1, end.transform.localPosition);
+        var mul = 1f - (((float)time.ElapsedMilliseconds) / (dieTime * 0.2f));
+        lineRenderer.widthMultiplier = mul * 0.2f;
         if (time.ElapsedMilliseconds > dieTime)
         {
             Destroy(this.transform.gameObject);
         }
+    }
+
+    void OnDrawGizmos()
+    {
+        if (start == null) return;
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(start.transform.position, Radius);
     }
 }
