@@ -20,9 +20,11 @@ public class LightningBehavior : MonoBehaviour, IShooting
         windupTime = 1f,
         coolDownTime = 2f,
         falloff = 10f,
-        disableTime = 4f;
+        disableTime = 4f,
+        beamOffset = 0.9f;
 
     private WeaponClock clock = new WeaponClock();
+    private GameObject beamPhantasm;
 
     public bool CanShoot()
     {
@@ -32,12 +34,31 @@ public class LightningBehavior : MonoBehaviour, IShooting
     void IShooting.Shoot()
     {
         clock.Reset();
+        RaycastHit hit;
+        // Does the ray intersect any objects excluding the player layer
+        if (Physics.Raycast(transform.position, -transform.forward, out hit, Mathf.Infinity))
+        {
+            var script = hit.collider.gameObject.GetComponentInParent<IDamageAcceptor>();
+            if (script != null)
+            {
+                var beam = Instantiate(beamPhantasm, transform.position, transform.rotation);
+                beam.SetActive(true);
+                var start = beam.transform.Find("Start").gameObject;
+                var end = beam.transform.Find("End").gameObject;
+                start.transform.position = transform.position + -transform.forward * beamOffset;
+                end.transform.position = hit.point;
+                script.TakeDamage(new Damage(baseDamage, Damage.Type.ELECTRIC));
+            }
+        }
     }
 
     // Start is called before the first frame update
     void Start()
     {
-
+        beamPhantasm = transform.Find("BeamPhantasm").gameObject;
+        clock.Time = (long)(this.coolDownTime * 1000);
+        clock.Jitter = 0;
+        clock.Start();
     }
 
     // Update is called once per frame
