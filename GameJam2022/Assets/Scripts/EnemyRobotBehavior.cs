@@ -45,7 +45,7 @@ class Chasing : State
     public Chasing(GameObject target) { this.target = target; }
 }
 
-public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ICollisionAcceptor
+public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterListener
 {
     public enum InitialState
     {
@@ -55,12 +55,8 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ICollisionAcce
     }
     [Header("Initial attributes")]
     public InitialState initialState = InitialState.Vigilant;
-    [Header("Intrinsic attributes")]
-    [Range(1, 100)]
-    public float wakeRadius = 15f;
-    [Range(10, 1000)]
-    public float hearRadius = 100f;
 
+    [Header("Intrinsic attributes")]
     private State currentState;
     private GameObject wakeGO, hearGO;
 
@@ -74,8 +70,6 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ICollisionAcce
     {
         wakeGO = transform.Find("AwakeSphere").gameObject;
         hearGO = transform.Find("HearSphere").gameObject;
-        wakeGO.GetComponent<SphereCollider>().radius = wakeRadius;
-        hearGO.GetComponent<SphereCollider>().radius = hearRadius;
         switch (initialState)
         {
             case InitialState.Vigilant:
@@ -97,23 +91,16 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ICollisionAcce
         currentState.Update(this);
     }
 
-    void OnDrawGizmos()
+    void ITriggerEnterListener.OnTriggerEnter(GameObject source, Collider other)
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, wakeRadius);
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position, hearRadius);
-    }
-
-    void ICollisionAcceptor.OnCollisionEnter(GameObject from, Collision other)
-    {
-        if (from == wakeGO)
-        {
-            Debug.LogWarning($"I SENSE NEAR! you, {other}...");
-        }
-        else if (from == hearGO)
-        {
-            Debug.LogWarning($"I hear you, {other}...");
-        }
+        Debug.LogError("FAFAFAFA");
+        // if (source == wakeGO)
+        // {
+        //     Debug.LogWarning($"I SENSE NEAR! you, {other}...");
+        // }
+        // else if (from == hearGO)
+        // {
+        //     Debug.LogWarning($"I hear you, {other}...");
+        // }
     }
 }

@@ -99,7 +99,7 @@ public class ControlPlayer : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        print(other.tag);
+        // print(other.tag);
         switch(other.tag)
         {
             //RECOLECTABLES
