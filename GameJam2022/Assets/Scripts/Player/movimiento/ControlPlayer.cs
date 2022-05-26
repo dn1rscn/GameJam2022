@@ -6,6 +6,7 @@ using Cinemachine;
 
 public class ControlPlayer : MonoBehaviour
 {
+    PlayerInputActions playerInputActions;
     public Animator animatorPlayer;
     private Rigidbody playerRigidbody;
     private PlayerInput playerInput;
@@ -14,8 +15,9 @@ public class ControlPlayer : MonoBehaviour
     LootSystem lootSystem;
 
     Vector2 movimiento, rotate;
-    public bool disparo,apuntar,esquivar;
+    public bool disparo,apuntar,esquivar,mouse;
     public float velocidad, velocidadGiro, velocidadEsquivar;
+    float turnSmothTime = 0.1f,turnSmoothVelocity;
     //public float fuerza;
 
     public GameObject arma;
@@ -35,8 +37,9 @@ public class ControlPlayer : MonoBehaviour
         //var thirdPersonCamera = GameObject.Find("Third Person Camera").GetComponent<CinemachineFreeLook>().m_XAxis.m_MaxSpeed = 300;
 
         //ACTIVAMOS LOS PLAYER INPUTS
-        PlayerInputActions playerInputActions = new PlayerInputActions();
+        playerInputActions = new PlayerInputActions();
         playerInputActions.Player.Enable();
+        
         playerInputActions.Player.Movimiento.performed += ctx => movimiento = ctx.ReadValue<Vector2>();
         playerInputActions.Player.Movimiento.canceled += ctx => movimiento=Vector2.zero;
 
@@ -57,11 +60,55 @@ public class ControlPlayer : MonoBehaviour
 
     void Update()
     {
+        //DETECTAMOS EL INPUT
+        InputSystem.onActionChange += (obj, change) =>
+        {
+            if (change == InputActionChange.ActionPerformed)
+            {
+                var inputAction = (InputAction)obj;
+                var lastControl = inputAction.activeControl;
+                var lastDevice = lastControl.device;
+
+                //bug.Log($"device: {lastDevice.name}");
+                if (lastDevice.name == "Mouse") mouse = true;
+                else mouse = false;
+            }
+        };
+
         //MOVIMIENTO
-        Vector3 m = new Vector3(movimiento.x,0.0f,movimiento.y) * velocidad * Time.deltaTime;
-        Vector3 d = new Vector2(0, rotate.x) * velocidadGiro*Time.deltaTime;
-        transform.Rotate(d, Space.World);
-        transform.Translate(m, Space.Self);
+        Vector3 m = Vector3.zero;
+        Vector3 direction = new Vector3(movimiento.x, 0.0f, movimiento.y).normalized;
+            //giro sin apuntar
+        if(direction.magnitude>=0.1f&&!apuntar)
+        {
+            float targetAngle = Mathf.Atan2(direction.x, direction.z)*Mathf.Rad2Deg;
+            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmothTime);
+            transform.rotation = Quaternion.Euler(0f, angle, 0f);
+        }
+        m = direction * velocidad * Time.deltaTime;
+        transform.Translate(m, Space.World);
+
+        //giro al apuntar
+        if (apuntar)
+        {
+            if (mouse) //GIRO CON EL MOUSE
+            {
+                Vector2 d = new Vector2(0, rotate.x) * velocidadGiro * Time.deltaTime;
+                transform.Rotate(d, Space.World);
+            }
+            else//GIRO CON EL MANDO
+            {
+                Vector2 dirGiro = new Vector2(rotate.x, rotate.y).normalized;// * velocidadGiro * Time.deltaTime;
+                if (dirGiro.magnitude >= 0.1f)
+                {
+                    float targetAngleG = Mathf.Atan2(dirGiro.x, dirGiro.y) * Mathf.Rad2Deg;
+                    //Vector2 d = new Vector2(targetAngleG, 0f);
+                    transform.rotation = Quaternion.Euler(0f, targetAngleG, 0f);
+                    //transform.Rotate(d, Space.World);
+                }
+            }
+
+        }
 
         //APUNTAR
         arma.SetActive(apuntar);
@@ -116,5 +163,11 @@ public class ControlPlayer : MonoBehaviour
             case "Trigger Puerta":
                 break;
         }
+    }
+
+    public void OnJoin(InputAction.CallbackContext ctx)
+    {
+        if (ctx.control.device is Keyboard) print("teclado");
+        else print("Mando");
     }
 }
