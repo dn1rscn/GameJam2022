@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Projectile
   - Trigger Energia
+  - pared transparente
   layers:
   - Default
   - TransparentFX
@@ -17,8 +18,8 @@ TagManager:
   - Enemies
   - Allies
   - Neutral
-  - 
-  - 
+  - Paredes
+  - Floor
   - 
   - 
   - 
