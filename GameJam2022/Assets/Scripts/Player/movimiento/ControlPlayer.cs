@@ -145,6 +145,7 @@ public class ControlPlayer : MonoBehaviour
             else 
             {
                 print("DISPARO!!!");
+
                 //TODO:hacer la llamada a la función de disparo
             }
         }
