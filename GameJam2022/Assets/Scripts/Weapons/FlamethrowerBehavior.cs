@@ -16,26 +16,57 @@ public class FlamethrowerBehavior : MonoBehaviour, IShooting
         tankSize = 200f;
 
     private WeaponClock clock = new WeaponClock();
+    private GameObject flames;
+    private bool shooting = false;
 
     public bool CanShoot()
     {
-        return clock.Ready;
+        return true;
     }
 
     public void Shoot()
     {
-        clock.Reset();
+        shooting = true;
     }
 
     // Start is called before the first frame update
     void Start()
     {
-
+        flames = transform.Find("Flames").gameObject;
     }
 
     // Update is called once per frame
     void Update()
     {
+        flames.SetActive(shooting);
+        if (shooting)
+        {
+            foreach (var acceptor in acceptors)
+            {
+                acceptor.TakeDamage(new Damage(this.damagePerSecond, Damage.Type.HEAT));
+            }
+        }
+        shooting = false;
+    }
 
+    private HashSet<IDamageAcceptor> acceptors = new HashSet<IDamageAcceptor>();
+
+    void OnTriggerEnter(Collider other)
+    {
+        var script = other.GetComponentInParent<IDamageAcceptor>();
+        if (script != null)
+        {
+            Debug.Log("Added enemy!");
+            acceptors.Add(script);
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        var script = other.GetComponentInParent<IDamageAcceptor>();
+        if (script != null)
+        {
+            acceptors.Remove(script);
+        }
     }
 }
