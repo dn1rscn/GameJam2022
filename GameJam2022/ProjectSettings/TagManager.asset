@@ -7,6 +7,8 @@ TagManager:
   - Projectile
   - Trigger Energia
   - pared transparente
+  - Prota
+  - Prota_Anims
   layers:
   - Default
   - TransparentFX

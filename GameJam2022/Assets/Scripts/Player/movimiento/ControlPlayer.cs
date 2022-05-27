@@ -30,10 +30,34 @@ public class ControlPlayer : MonoBehaviour
     public int energia;
     public int municion;
 
+    Prota_Anims scr_protaAnims;
+
+    public int armaSeleccionada = 0;
+    public string armaSeleccionada_name;
+    public GameObject pistol, flamer, grenade, lightning;
+    private GameObject[] weapons_GObj;
+    private IShooting[] weapons;
+
     private void Start()
     {
         //ursor.visible = false;
         //Cursor.lockState = CursorLockMode.Locked;
+
+        weapons_GObj = new GameObject[]{
+            pistol,
+            flamer,
+            grenade,
+            lightning
+        };
+
+        weapons = new IShooting[]{
+            pistol.GetComponent<IShooting>(),
+            flamer.GetComponent<IShooting>(),
+            grenade.GetComponent<IShooting>(),
+            lightning.GetComponent<IShooting>()
+        };
+
+        
     }
     private void Awake()
     {
@@ -43,12 +67,20 @@ public class ControlPlayer : MonoBehaviour
         playerInput = GetComponent<PlayerInput>();
         //var thirdPersonCamera = GameObject.Find("Third Person Camera").GetComponent<CinemachineFreeLook>().m_XAxis.m_MaxSpeed = 300;
 
+        if (GameObject.FindGameObjectWithTag("Prota_Anims").GetComponent<Prota_Anims>())
+        {
+            scr_protaAnims = GameObject.FindGameObjectWithTag("Prota_Anims").GetComponent<Prota_Anims>();
+        }
+
         //ACTIVAMOS LOS PLAYER INPUTS
         playerInputActions = new PlayerInputActions();
         playerInputActions.Player.Enable();
         
         playerInputActions.Player.Movimiento.performed += ctx => movimiento = ctx.ReadValue<Vector2>();
+        playerInputActions.Player.Movimiento.performed += ctx => Andar();
         playerInputActions.Player.Movimiento.canceled += ctx => movimiento=Vector2.zero;
+        playerInputActions.Player.Movimiento.canceled += ctx => AndarOff();
+
 
         playerInputActions.Player.Giro.performed += ctx => rotate = ctx.ReadValue<Vector2>();
         playerInputActions.Player.Giro.canceled += ctx => rotate = Vector2.zero;
@@ -56,13 +88,17 @@ public class ControlPlayer : MonoBehaviour
         playerInputActions.Player.Disparo.performed += ctx => disparo = ctx.ReadValueAsButton();
         playerInputActions.Player.Disparo.canceled += ctx => disparo = ctx.ReadValueAsButton();
 
-        playerInputActions.Player.Correr.performed += ctx => velocidad=velocidad*2;
-        playerInputActions.Player.Correr.canceled += ctx => velocidad=velocidad/2;
+        playerInputActions.Player.Correr.performed += ctx => velocidad = velocidad * 2.5f;
+        playerInputActions.Player.Correr.performed += ctx => Correr();
+        playerInputActions.Player.Correr.canceled += ctx => velocidad=velocidad/2.5f;
+        playerInputActions.Player.Correr.canceled += ctx => CorrerOff();
 
         playerInputActions.Player.esquivar.performed += ctx => Esquivar();
 
         playerInputActions.Player.Apuntar.performed += ctx => apuntar = true;
+        playerInputActions.Player.Apuntar.performed += ctx => Apuntar();
         playerInputActions.Player.Apuntar.canceled += ctx => apuntar = false;
+        playerInputActions.Player.Apuntar.canceled += ctx => ApuntarOff();
     }
 
     void Update()
@@ -136,17 +172,41 @@ public class ControlPlayer : MonoBehaviour
 
         //APUNTAR
         arma.SetActive(apuntar);
-         
-        
+
+        //ACTIVAMOS EL GAMEOBJECT DEL ARMA SELECCIONADA
+
+        if (armaSeleccionada <= 3)
+        {
+            armaSeleccionada_name = weapons_GObj[armaSeleccionada].name;
+        }
+        else
+            armaSeleccionada_name = weapons_GObj[0].name;
+
+        foreach (var weapon_GObj in weapons_GObj)
+        {
+            if(weapon_GObj.name != armaSeleccionada_name)
+            {
+                weapon_GObj.SetActive(false);
+            }
+            else
+            {
+                weapon_GObj.SetActive(true);
+            }
+        }
+
         //DISPARO
-        if(disparo&&apuntar)
+        if (disparo&&apuntar)
         {
             if (municion <= 0) Debug.LogError("NO TIENES MUNICION");
             else 
             {
-                print("DISPARO!!!");
-
-                //TODO:hacer la llamada a la función de disparo
+            //TODO:hacer la llamada a la función de disparo
+               // if (weapons[armaSeleccionada].CanShoot())
+                //{
+                    weapons[armaSeleccionada].Shoot();
+                    print("DISPARO!!!");
+                //}
+                
             }
         }
 
@@ -159,6 +219,38 @@ public class ControlPlayer : MonoBehaviour
         }*/
     }
 
+    //ANIMACIONES***************************
+    void Andar()
+    {
+        scr_protaAnims.Andar(movimiento);
+    }
+    void AndarOff()
+    {
+        scr_protaAnims.AndarOff();
+    }
+
+
+    void Correr()
+    {
+        scr_protaAnims.Correr();
+    }
+    void CorrerOff()
+    {
+        scr_protaAnims.CorrerOff();
+    }
+
+
+    void Apuntar()
+    {
+        scr_protaAnims.Apuntar();
+
+    }
+    void ApuntarOff()
+    {
+        scr_protaAnims.ApuntarOff();
+    }
+
+
     void Esquivar()
     {
         esquivar = true;
@@ -168,6 +260,8 @@ public class ControlPlayer : MonoBehaviour
     {
         esquivar = false;
     }
+
+    //************************************
 
     private void OnTriggerEnter(Collider other)
     {
