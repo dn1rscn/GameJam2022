@@ -34,12 +34,19 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
             var z = Random.Range(-r, r);
             var dest = Actor.origin + new Vector3(x, Actor.origin.y, z);
             Actor.nav.SetDestination(dest);
-            yield return new WaitUntil(() => Actor.nav.pathStatus == NavMeshPathStatus.PathComplete);
+            while (Actor.nav.pathStatus != NavMeshPathStatus.PathComplete)
+            {
+                yield return new WaitForEndOfFrame();
+            }
             var idleTime = Random.Range(Actor.patrolIdleMinTime, Actor.patrolIdleMaxTime);
             // Actor.animator.Play("Enemigo_Standby");
-            yield return new WaitForSeconds(1f);
+            // Debug.Log("Resting patrol.");
+            // TODO: Fix this!!!!!
+            // Monster drifts BEFORE reaching the stop point. (???)
             Actor.Animate(ANIMATION_IDLE);
             yield return new WaitForSeconds(idleTime);
+            Actor.Animate(ANIMATION_WALK);
+            yield return new WaitForEndOfFrame();
             Actor.StartCoroutine(PatrolAndWait());
         }
         public override void Update()
@@ -116,10 +123,24 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
             yield return new WaitForSeconds(Actor.patrolGiveUpTime);
             Actor.StartCoroutine(GoSleep());
         }
-        private bool killingFocus = false;
+        IEnumerator StartAttacking()
+        {
+            Actor.weapon.SetActive(true);
+            Actor.Animate(ANIMATION_ATTACK);
+            yield return new WaitForSeconds(5f);
+            attacking = false;
+            Actor.weapon.SetActive(false);
+            Actor.Animate(ANIMATION_CHASE);
+        }
+        private bool killingFocus = false, attacking = false;
         public override void Update()
         {
             Actor.nav.SetDestination(Actor.player.transform.position);
+            if (!attacking && Actor.playerInWakeRadius)
+            {
+                attacking = true;
+                Actor.StartCoroutine(StartAttacking());
+            }
             if (!killingFocus && !Actor.playerInRadius)
             {
                 Debug.Log("Killing focus (Lost sight)");
@@ -187,9 +208,12 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
 
     private Transform body;
     private Vector3 origin;
+    private GameObject weapon;
     // Start is called before the first frame update
     void Start()
     {
+        weapon = GameObject.FindGameObjectWithTag("Killjoy");
+        weapon.SetActive(false);
         origin = transform.position + new Vector3(0, 1f, 0);
         nav = GetComponent<NavMeshAgent>();
         body = transform.Find("Body");
@@ -228,20 +252,27 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
         currentState.Update();
     }
 
-    private bool playerInRadius = false;
+    private bool playerInRadius = false, playerInWakeRadius = false;
     void ITriggerEnterListener.OnTriggerEnter(GameObject source, Collider other)
     {
         if (other.gameObject != player) return;
-        playerInRadius = true;
         if (source == wakeGO)
+        {
+            playerInWakeRadius = true;
             currentState.TriggerAwake(other);
+        }
         else if (source == hearGO)
+        {
+            playerInRadius = true;
             currentState.TriggerHear(other);
+        }
     }
     void ITriggerExitListener.OnTriggerExit(GameObject source, Collider other)
     {
         if (other.gameObject != player) return;
         if (source == hearGO)
             playerInRadius = false;
+        if (source == wakeGO)
+            playerInWakeRadius = false;
     }
 }

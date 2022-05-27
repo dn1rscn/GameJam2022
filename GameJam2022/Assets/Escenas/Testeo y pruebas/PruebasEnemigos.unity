@@ -418,6 +418,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5562758655405116738, guid: a86ddcb67fb35754ab8978496acb7503, type: 3}
+      propertyPath: m_StoppingDistance
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 8632051430201765074, guid: a86ddcb67fb35754ab8978496acb7503, type: 3}
       propertyPath: m_RootOrder
       value: 4
@@ -712,6 +716,10 @@ PrefabInstance:
       propertyPath: initialState
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5562758655405116738, guid: a86ddcb67fb35754ab8978496acb7503, type: 3}
+      propertyPath: m_StoppingDistance
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 8632051430201765074, guid: a86ddcb67fb35754ab8978496acb7503, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -779,7 +787,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5562758655405116738, guid: a86ddcb67fb35754ab8978496acb7503, type: 3}
       propertyPath: m_StoppingDistance
-      value: 1
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 8632051430201765074, guid: a86ddcb67fb35754ab8978496acb7503, type: 3}
       propertyPath: m_RootOrder
