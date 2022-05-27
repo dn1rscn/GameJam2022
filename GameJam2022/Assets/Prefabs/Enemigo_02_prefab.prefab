@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1280680003073865025}
   - component: {fileID: 4792748377753372059}
   - component: {fileID: 4554707054245098203}
+  - component: {fileID: 7013373983345130345}
   m_Layer: 7
   m_Name: AwakeSphere
   m_TagString: Untagged
@@ -58,6 +59,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d40e2ea3417e8ab4a97ea509fd50610f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7013373983345130345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4234165005407484708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1093c5f95fa7a144ba5464304c635ec3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5700861522462601068
 GameObject:
   m_ObjectHideFlags: 0
@@ -69,6 +82,7 @@ GameObject:
   - component: {fileID: 8154548834537046069}
   - component: {fileID: 7024618880023266540}
   - component: {fileID: 7592636668538694964}
+  - component: {fileID: 2788869075377990303}
   m_Layer: 7
   m_Name: HearSphere
   m_TagString: Untagged
@@ -114,6 +128,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d40e2ea3417e8ab4a97ea509fd50610f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2788869075377990303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5700861522462601068}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1093c5f95fa7a144ba5464304c635ec3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &8632051430201765077
