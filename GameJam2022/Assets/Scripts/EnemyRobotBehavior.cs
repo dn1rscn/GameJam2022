@@ -5,6 +5,10 @@ using UnityEngine.AI;
 
 public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterListener, ITriggerExitListener
 {
+    const int ANIMATION_IDLE = 0;
+    const int ANIMATION_WALK = 1;
+    const int ANIMATION_CHASE = 2;
+    const int ANIMATION_ATTACK = 3;
     abstract class State
     {
         private EnemyRobotBehavior actor;
@@ -23,8 +27,8 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
 
         IEnumerator PatrolAndWait()
         {
-            Actor.animator.Play("Enemigo_Andar");
-            Actor.animator.speed = 1;
+            Actor.Animate(ANIMATION_WALK);
+            // Actor.animator.Play("Enemigo_Andar");
             var r = Actor.patrolRadiusFromOrigin;
             var x = Random.Range(-r, r);
             var z = Random.Range(-r, r);
@@ -32,7 +36,9 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
             Actor.nav.SetDestination(dest);
             yield return new WaitUntil(() => Actor.nav.pathStatus == NavMeshPathStatus.PathComplete);
             var idleTime = Random.Range(Actor.patrolIdleMinTime, Actor.patrolIdleMaxTime);
-            Actor.animator.speed = 0;
+            // Actor.animator.Play("Enemigo_Standby");
+            yield return new WaitForSeconds(1f);
+            Actor.Animate(ANIMATION_IDLE);
             yield return new WaitForSeconds(idleTime);
             Actor.StartCoroutine(PatrolAndWait());
         }
@@ -48,6 +54,7 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
         }
         public override void Start()
         {
+            Debug.Log("Starting patrol...");
             Actor.StartCoroutine(PatrolAndWait());
         }
     }
@@ -65,6 +72,11 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
             yield return null;
             Actor.currentState.Start();
         }
+        public override void Start()
+        {
+            // Actor.animator.Play("Enemigo_Activarse");
+            Actor.animator.speed = 0;
+        }
     }
     /// <summary> Represent a sleep state that won't react to players </summary>
     class Dormant : ShutdownMode
@@ -75,11 +87,6 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     class Vigilant : ShutdownMode
     {
         public Vigilant(EnemyRobotBehavior actor) : base(actor) { }
-        public override void Start()
-        {
-            Actor.animator.Play("Enemigo_Activarse");
-            Actor.animator.speed = 0;
-        }
         override public void TriggerAwake(UnityEngine.Collider collider)
         {
             Actor.StartCoroutine(AwakeRoutine());
@@ -91,12 +98,16 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
         public Chasing(EnemyRobotBehavior actor) : base(actor) { }
         public override void Start()
         {
-            Actor.animator.Play("Enemigo_Perseguir");
+            // Actor.animator.Play("Enemigo_Perseguir");
+            Actor.Animate(ANIMATION_CHASE);
         }
         IEnumerator GoSleep()
         {
-            Actor.animator.Play("Enemigo_Standby");
+            Debug.Log("Enemy coasting to sleep...");
+            // Actor.animator.Play("Enemigo_Standby");
+            Actor.Animate(ANIMATION_IDLE);
             yield return new WaitForSeconds(4f);
+            Actor.StopAllCoroutines();
             Actor.currentState = new Patrol(Actor);
             Actor.currentState.Start();
         }
@@ -111,6 +122,7 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
             Actor.nav.SetDestination(Actor.player.transform.position);
             if (!killingFocus && !Actor.playerInRadius)
             {
+                Debug.Log("Killing focus (Lost sight)");
                 killingFocus = true;
                 Actor.StartCoroutine(KillFocus());
             }
@@ -156,6 +168,10 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     /// <summary> Called when health reaches 0 after damage. </summary>
     void Die() { }
 
+    void Animate(int id)
+    {
+        animator.SetInteger("state", id);
+    }
     void IDamageAcceptor.TakeDamage(Damage incoming)
     {
         if (incoming.type != Damage.Type.KINETIC) return;
