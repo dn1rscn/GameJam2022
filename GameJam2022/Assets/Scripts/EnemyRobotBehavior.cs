@@ -13,19 +13,48 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
         public virtual void Start() { }
         public virtual void TriggerAwake(Collider collider) { }
         public virtual void TriggerHear(Collider collider) { }
-        public virtual State GoPatrol() { return new Patrol(Actor); }
-        public virtual State GoDormant() { return new Dormant(Actor); }
-        public virtual State GoVigilant() { return new Vigilant(Actor); }
-        public virtual State GoChasing(GameObject target) { return new Chasing(Actor, target); }
-        public virtual void OnCollisionEnter(Collision other) { }
     }
 
     class Patrol : State
     {
         public bool willSleep = false;
         public Vector3 origin;
-        public Patrol(EnemyRobotBehavior actor) : base(actor)
+        public Patrol(EnemyRobotBehavior actor) : base(actor) { }
+
+        IEnumerator PatrolAndWait()
         {
+            Actor.animator.Play("Enemigo_Andar");
+            for (int i = 0; i < 10; i++)
+            {
+                yield return new WaitForSeconds(.1f);
+                Actor.transform.position += Actor.transform.forward;
+            }
+            yield return new WaitForSeconds(.1f);
+            Actor.animator.Play("Enemigo_Standby");
+            yield return new WaitForSeconds(1f);
+            Actor.animator.Play("Enemigo_Andar");
+            for (int i = 0; i < 10; i++)
+            {
+                yield return new WaitForSeconds(.1f);
+                Actor.transform.position -= Actor.transform.forward;
+            }
+            yield return new WaitForSeconds(.1f);
+            Actor.animator.Play("Enemigo_Standby");
+            yield return new WaitForSeconds(1f);
+            Actor.StartCoroutine(PatrolAndWait());
+        }
+        public override void Update()
+        {
+            if (Actor.playerInRadius && Actor.PlayerInCone)
+            {
+                Actor.StopAllCoroutines();
+                Actor.currentState = new Chasing(Actor);
+                Actor.currentState.Start();
+            }
+        }
+        public override void Start()
+        {
+            Actor.StartCoroutine(PatrolAndWait());
         }
     }
     abstract class ShutdownMode : State
@@ -38,18 +67,14 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
             Actor.animator.Play("Enemigo_Activarse");
             Actor.animator.speed = 0;
         }
-        override public State GoPatrol()
-        {
-            var state = new Patrol(Actor);
-            state.willSleep = true;
-            state.origin = Actor.transform.position;
-            return state;
-        }
         IEnumerator AwakeRoutine()
         {
             Actor.animator.speed = 1;
-            yield return new WaitForSeconds(2f);
-            Actor.currentState = new Patrol(Actor);
+            yield return new WaitForSeconds(6f);
+            var patrol = new Patrol(Actor);
+            patrol.willSleep = true;
+            patrol.origin = Actor.transform.position;
+            Actor.currentState = patrol;
             yield return null;
             Actor.currentState.Start();
         }
@@ -70,8 +95,16 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
 
     class Chasing : State
     {
-        public GameObject target;
-        public Chasing(EnemyRobotBehavior actor, GameObject target) : base(actor) { this.target = target; }
+        public Chasing(EnemyRobotBehavior actor) : base(actor) { }
+        public override void Start()
+        {
+            Actor.animator.Play("Enemigo_Perseguir");
+        }
+        public override void Update()
+        {
+            Actor.transform.position += Actor.PlayerDir * Actor.walkSpeed;
+            Actor.body.forward = Actor.PlayerDir;
+        }
     }
     public enum InitialState
     {
@@ -85,10 +118,20 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     [Header("Intrinsic attributes")]
     public float maxHealth = 100f;
     public float initialHealth = 100f;
-    [Range(0, .9f)]
+    [Range(0f, 360f)]
+    public float viewCone = 90f;
+    [Range(0f, .9f)]
     public float armorReduction = 0;
+    public float walkSpeed = 0.1f;
+    public float patrolGiveUpTime = 20f;
+
+    private Vector3 PlayerDir { get => (player.transform.position - transform.position).normalized; }
+    private float FacingFactor { get => Vector3.Dot(transform.forward, PlayerDir); }
+    private float PlayerAngle { get => (1f - ((FacingFactor + 1f) / 2f)) * 360f; }
+    public bool PlayerInCone { get => PlayerAngle <= viewCone; }
 
     /* PRIVATE FIELDS */
+    private GameObject player;
     private State currentState;
     private GameObject wakeGO, hearGO;
     private Animator animator;
@@ -110,12 +153,27 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
         Debug.Log($"Robot absorbs {damage.amount} of {incoming} damage.");
     }
 
+    private LineRenderer playerRay;
+    private Transform body;
     // Start is called before the first frame update
     void Start()
     {
+        body = transform.Find("Body");
+        var aid = body.Find("VisualAid");
+        playerRay = aid.Find("PlayerRay").gameObject.GetComponent<LineRenderer>();
+        {
+            var cone = aid.Find("ViewCone");
+            var lines = cone.transform.GetComponentsInChildren<LineRenderer>();
+            var tipPos = lines[0].GetPosition(1);
+            var length = -tipPos.magnitude;
+            var displacement = length * Mathf.Tan(viewCone * 0.5f);
+            lines[0].SetPosition(1, tipPos + new Vector3(displacement, 0, 0));
+            lines[1].SetPosition(1, tipPos + new Vector3(-displacement, 0, 0));
+        }
+        player = GameObject.FindGameObjectWithTag("Player");
         wakeGO = transform.Find("AwakeSphere").gameObject;
         hearGO = transform.Find("HearSphere").gameObject;
-        animator = transform.Find("Todas").GetComponent<Animator>();
+        animator = body.Find("Todas").GetComponent<Animator>();
         switch (initialState)
         {
             case InitialState.Vigilant:
@@ -135,12 +193,23 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     void Update()
     {
         currentState.Update();
+        var loc = player.transform.position - transform.position;
+        loc.y = 0;
+        playerRay.SetPosition(1, loc);
+        if (PlayerInCone)
+        {
+            playerRay.endColor = Color.magenta;
+        }
+        else
+        {
+            playerRay.endColor = Color.green;
+        }
     }
 
     private bool playerInRadius = false;
     void ITriggerEnterListener.OnTriggerEnter(GameObject source, Collider other)
     {
-        if (other.tag != "Player") return;
+        if (other.gameObject != player) return;
         playerInRadius = true;
         if (source == wakeGO)
             currentState.TriggerAwake(other);
@@ -149,7 +218,7 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     }
     void ITriggerExitListener.OnTriggerExit(GameObject source, Collider other)
     {
-        if (other.tag != "Player") return;
+        if (other.gameObject != player) return;
         if (source == hearGO)
             playerInRadius = false;
     }
