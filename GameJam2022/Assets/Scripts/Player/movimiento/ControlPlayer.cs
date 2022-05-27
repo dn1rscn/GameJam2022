@@ -205,7 +205,7 @@ public class ControlPlayer : MonoBehaviour
                 //{
                     weapons[armaSeleccionada].Shoot();
                     print("DISPARO!!!");
-                //}
+                //  }
                 
             }
         }
