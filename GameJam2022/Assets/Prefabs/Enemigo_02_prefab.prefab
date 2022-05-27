@@ -293,7 +293,7 @@ Transform:
   - {fileID: 8088900852644247515}
   - {fileID: 3523968545619256412}
   m_Father: {fileID: 8632051430201765074}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1862510833183767948
 GameObject:
@@ -431,7 +431,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8632051430201765074}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!135 &7024618880023266540
 SphereCollider:
@@ -644,6 +644,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8632051430201765074}
   - component: {fileID: 3176773576078282654}
+  - component: {fileID: 5562758655405116738}
   m_Layer: 7
   m_Name: Enemigo_02_prefab
   m_TagString: Untagged
@@ -663,9 +664,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 8154548834537046069}
-  - {fileID: 1280680003073865025}
   - {fileID: 3818974785327147773}
+  - {fileID: 1280680003073865025}
+  - {fileID: 8154548834537046069}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -686,8 +687,32 @@ MonoBehaviour:
   initialHealth: 100
   viewCone: 90
   armorReduction: 0
-  walkSpeed: 0.025
-  patrolGiveUpTime: 20
+  patrolGiveUpTime: 10
+  patrolRadiusFromOrigin: 30
+  patrolIdleMaxTime: 10
+  patrolIdleMinTime: 2
+--- !u!195 &5562758655405116738
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8632051430201765077}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 4
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &8632051431673087057
 GameObject:
   m_ObjectHideFlags: 0

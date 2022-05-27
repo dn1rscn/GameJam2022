@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterListener, ITriggerExitListener
 {
@@ -14,39 +15,32 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
         public virtual void TriggerAwake(Collider collider) { }
         public virtual void TriggerHear(Collider collider) { }
     }
-
+    /// <summary> Represents an active patrol state </summary>
     class Patrol : State
     {
         public bool willSleep = false;
-        public Vector3 origin;
         public Patrol(EnemyRobotBehavior actor) : base(actor) { }
 
         IEnumerator PatrolAndWait()
         {
             Actor.animator.Play("Enemigo_Andar");
-            for (int i = 0; i < 10; i++)
-            {
-                yield return new WaitForSeconds(.1f);
-                Actor.transform.position += Actor.transform.forward;
-            }
-            yield return new WaitForSeconds(.1f);
-            Actor.animator.Play("Enemigo_Standby");
-            yield return new WaitForSeconds(1f);
-            Actor.animator.Play("Enemigo_Andar");
-            for (int i = 0; i < 10; i++)
-            {
-                yield return new WaitForSeconds(.1f);
-                Actor.transform.position -= Actor.transform.forward;
-            }
-            yield return new WaitForSeconds(.1f);
-            Actor.animator.Play("Enemigo_Standby");
-            yield return new WaitForSeconds(1f);
+            Actor.animator.speed = 1;
+            var r = Actor.patrolRadiusFromOrigin;
+            var x = Random.Range(-r, r);
+            var z = Random.Range(-r, r);
+            var dest = Actor.origin + new Vector3(x, Actor.origin.y, z);
+            Actor.nav.SetDestination(dest);
+            yield return new WaitUntil(() => Actor.nav.pathStatus == NavMeshPathStatus.PathComplete);
+            var idleTime = Random.Range(Actor.patrolIdleMinTime, Actor.patrolIdleMaxTime);
+            Actor.animator.speed = 0;
+            yield return new WaitForSeconds(idleTime);
             Actor.StartCoroutine(PatrolAndWait());
         }
         public override void Update()
         {
             if (Actor.playerInRadius && Actor.PlayerInCone)
             {
+                Debug.Log("Stopping all routines.");
                 Actor.StopAllCoroutines();
                 Actor.currentState = new Chasing(Actor);
                 Actor.currentState.Start();
@@ -57,40 +51,39 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
             Actor.StartCoroutine(PatrolAndWait());
         }
     }
+    /// <summary> Shared methods for vigilant and dormant </summary>
     abstract class ShutdownMode : State
     {
-        protected ShutdownMode(EnemyRobotBehavior actor) : base(actor)
-        {
-        }
-        public override void Start()
-        {
-            Actor.animator.Play("Enemigo_Activarse");
-            Actor.animator.speed = 0;
-        }
-        IEnumerator AwakeRoutine()
+        protected ShutdownMode(EnemyRobotBehavior actor) : base(actor) { }
+        protected IEnumerator AwakeRoutine()
         {
             Actor.animator.speed = 1;
             yield return new WaitForSeconds(6f);
             var patrol = new Patrol(Actor);
             patrol.willSleep = true;
-            patrol.origin = Actor.transform.position;
             Actor.currentState = patrol;
             yield return null;
             Actor.currentState.Start();
+        }
+    }
+    /// <summary> Represent a sleep state that won't react to players </summary>
+    class Dormant : ShutdownMode
+    {
+        public Dormant(EnemyRobotBehavior actor) : base(actor) { }
+    }
+    /// <summary> Represents a sleep state that will react to players </summary>
+    class Vigilant : ShutdownMode
+    {
+        public Vigilant(EnemyRobotBehavior actor) : base(actor) { }
+        public override void Start()
+        {
+            Actor.animator.Play("Enemigo_Activarse");
+            Actor.animator.speed = 0;
         }
         override public void TriggerAwake(UnityEngine.Collider collider)
         {
             Actor.StartCoroutine(AwakeRoutine());
         }
-    }
-    class Dormant : ShutdownMode
-    {
-        public Dormant(EnemyRobotBehavior actor) : base(actor) { }
-    }
-
-    class Vigilant : ShutdownMode
-    {
-        public Vigilant(EnemyRobotBehavior actor) : base(actor) { }
     }
 
     class Chasing : State
@@ -100,10 +93,27 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
         {
             Actor.animator.Play("Enemigo_Perseguir");
         }
+        IEnumerator GoSleep()
+        {
+            Actor.animator.Play("Enemigo_Standby");
+            yield return new WaitForSeconds(4f);
+            Actor.currentState = new Patrol(Actor);
+            Actor.currentState.Start();
+        }
+        IEnumerator KillFocus()
+        {
+            yield return new WaitForSeconds(Actor.patrolGiveUpTime);
+            Actor.StartCoroutine(GoSleep());
+        }
+        private bool killingFocus = false;
         public override void Update()
         {
-            Actor.transform.position += Actor.PlayerDir * Actor.walkSpeed;
-            Actor.body.forward = Actor.PlayerDir;
+            Actor.nav.SetDestination(Actor.player.transform.position);
+            if (!killingFocus && !Actor.playerInRadius)
+            {
+                killingFocus = true;
+                Actor.StartCoroutine(KillFocus());
+            }
         }
     }
     public enum InitialState
@@ -122,8 +132,13 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     public float viewCone = 90f;
     [Range(0f, .9f)]
     public float armorReduction = 0;
-    public float walkSpeed = 0.1f;
     public float patrolGiveUpTime = 20f;
+    [Range(1f, 100f)]
+    public float patrolRadiusFromOrigin = 30f;
+    [Range(0f, 60f)]
+    public float patrolIdleMaxTime = 10f;
+    [Range(0f, 60f)]
+    public float patrolIdleMinTime = 2f;
 
     private Vector3 PlayerDir { get => (player.transform.position - transform.position).normalized; }
     private float FacingFactor { get => Vector3.Dot(transform.forward, PlayerDir); }
@@ -136,6 +151,7 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     private GameObject wakeGO, hearGO;
     private Animator animator;
     private float health;
+    private NavMeshAgent nav;
 
     /// <summary> Called when health reaches 0 after damage. </summary>
     void Die() { }
@@ -153,14 +169,15 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
         Debug.Log($"Robot absorbs {damage.amount} of {incoming} damage.");
     }
 
-    private LineRenderer playerRay;
     private Transform body;
+    private Vector3 origin;
     // Start is called before the first frame update
     void Start()
     {
+        origin = transform.position + new Vector3(0, 1f, 0);
+        nav = GetComponent<NavMeshAgent>();
         body = transform.Find("Body");
         var aid = body.Find("VisualAid");
-        playerRay = aid.Find("PlayerRay").gameObject.GetComponent<LineRenderer>();
         {
             var cone = aid.Find("ViewCone");
             var lines = cone.transform.GetComponentsInChildren<LineRenderer>();
@@ -193,17 +210,6 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     void Update()
     {
         currentState.Update();
-        var loc = player.transform.position - transform.position;
-        loc.y = 0;
-        playerRay.SetPosition(1, loc);
-        if (PlayerInCone)
-        {
-            playerRay.endColor = Color.magenta;
-        }
-        else
-        {
-            playerRay.endColor = Color.green;
-        }
     }
 
     private bool playerInRadius = false;
