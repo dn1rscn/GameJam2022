@@ -1,5 +1,7 @@
+using System;
 using UnityEngine;
 
+[Obsolete]
 public interface ITriggerAcceptor
 {
     void OnTriggerEnter(GameObject source, Collider other) { }
