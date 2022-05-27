@@ -9,17 +9,20 @@ public class ControlPlayer : MonoBehaviour
     PlayerInputActions playerInputActions;
     public Animator animatorPlayer;
     private Rigidbody playerRigidbody;
-    private PlayerInput playerInput;
     public Camera cam;
     public CinemachineFreeLook thirdPersonCamera;
     LootSystem lootSystem;
+    ControlHub controlHub;
 
     Vector2 movimiento, rotate;
-    public bool disparo,apuntar,esquivar,mouse;
-    public float velocidad, velocidadGiro, velocidadEsquivar;
+    bool disparo, apuntar, esquivar, mouse;
+    public bool canMove=false;
+
+    public float velocidad, velocidadGiro, velocidadEsquivar,fuerzaRetroceso;
     float turnSmothTime = 0.1f,turnSmoothVelocity;
     float camRayLength = 100f;
     int floorMask;
+    public int vida=2;
 
     public Transform firePoint;
     //public float fuerza;
@@ -32,16 +35,23 @@ public class ControlPlayer : MonoBehaviour
 
     Prota_Anims scr_protaAnims;
 
+    [Header("Armas")]
     public int armaSeleccionada = 0;
     public string armaSeleccionada_name;
     public GameObject pistol, flamer, grenade, lightning;
     private GameObject[] weapons_GObj;
     private IShooting[] weapons;
 
+    [Header("UI")]
+    public GameObject uiKill;
+    public GameObject uiHub;
+
     private void Start()
     {
         //ursor.visible = false;
         //Cursor.lockState = CursorLockMode.Locked;
+
+        controlHub = GameObject.Find("ControlHub").GetComponent<ControlHub>();
 
         weapons_GObj = new GameObject[]{
             pistol,
@@ -64,7 +74,6 @@ public class ControlPlayer : MonoBehaviour
         floorMask = LayerMask.GetMask("Floor");
         print("iniciamos");
         playerRigidbody = GetComponent<Rigidbody>();
-        playerInput = GetComponent<PlayerInput>();
         //var thirdPersonCamera = GameObject.Find("Third Person Camera").GetComponent<CinemachineFreeLook>().m_XAxis.m_MaxSpeed = 300;
 
         if (GameObject.FindGameObjectWithTag("Prota_Anims").GetComponent<Prota_Anims>())
@@ -74,7 +83,9 @@ public class ControlPlayer : MonoBehaviour
 
         //ACTIVAMOS LOS PLAYER INPUTS
         playerInputActions = new PlayerInputActions();
-        playerInputActions.Player.Enable();
+
+        if (canMove) playerInputActions.Player.Enable();
+        else playerInputActions.Player.Disable();
         
         playerInputActions.Player.Movimiento.performed += ctx => movimiento = ctx.ReadValue<Vector2>();
         playerInputActions.Player.Movimiento.performed += ctx => Andar();
@@ -119,17 +130,21 @@ public class ControlPlayer : MonoBehaviour
         };
 
         //MOVIMIENTO
-        Vector3 m = Vector3.zero;
-        Vector3 direction = new Vector3(movimiento.x, 0.0f, movimiento.y).normalized;
-            //giro sin apuntar
-        if(direction.magnitude>=0.1f&&!apuntar)
+        if (canMove)
         {
-            float targetAngle = Mathf.Atan2(direction.x, direction.z)*Mathf.Rad2Deg;
-            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmothTime);
-            transform.rotation = Quaternion.Euler(0f, angle, 0f);
+            Vector3 m = Vector3.zero;
+            Vector3 direction = Vector3.zero;
+            direction = new Vector3(movimiento.x, 0.0f, movimiento.y).normalized;
+            //giro sin apuntar
+            if (direction.magnitude >= 0.1f && !apuntar)
+            {
+                float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+                float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmothTime);
+                transform.rotation = Quaternion.Euler(0f, angle, 0f);
+            }
+            m = direction * velocidad * Time.deltaTime;
+            transform.Translate(m, Space.World);
         }
-        m = direction * velocidad * Time.deltaTime;
-        transform.Translate(m, Space.World);
 
         //giro al apuntar
         if (apuntar)
@@ -201,22 +216,25 @@ public class ControlPlayer : MonoBehaviour
             else 
             {
             //TODO:hacer la llamada a la función de disparo
-               // if (weapons[armaSeleccionada].CanShoot())
-                //{
+               if (weapons[armaSeleccionada].CanShoot())
+               {
                     weapons[armaSeleccionada].Shoot();
+                    municion--;
+                    controlHub.ActualizarHub(municion, armaSeleccionada);
                     print("DISPARO!!!");
-                //  }
+                    playerRigidbody.AddForce(Vector3.back * fuerzaRetroceso,ForceMode.Force);
+               }
                 
             }
         }
 
         //ESQUIVAR
-        /*if (esquivar)
+        if (esquivar)
         {
             Vector3 me = new Vector3(movimiento.x, 0.0f, movimiento.y) * velocidadEsquivar * Time.deltaTime;
-            transform.Translate(me, Space.Self);
+            transform.Translate(me);
             Invoke("esquivarOff", 0.2f);
-        }*/
+        }
     }
 
     //ANIMACIONES***************************
@@ -262,31 +280,74 @@ public class ControlPlayer : MonoBehaviour
     }
 
     //************************************
-
+    private void OnTriggerStay(Collider other)
+    {
+        switch (other.tag)
+        {
+            //OBJECTOS
+            case "Trigger Puerta":
+                if (other.GetComponent<ControlPuertas>().energia < other.GetComponent<ControlPuertas>().energiaNecesaria)
+                {
+                    other.GetComponent<ControlPuertas>().energia++;
+                    energia--;
+                }
+                break;
+        }
+    }
     private void OnTriggerEnter(Collider other)
     {
         print(other.tag);
         switch(other.tag)
         {
+            //Enemigos
+            case "Ataque Enemigo pequeño":
+                vida--;
+                Kill();
+                break;
+            case "Ataque Enemigo":
+                vida-=2;
+                Kill();
+                break;
+
             //RECOLECTABLES
             case "Trigger Energia"://RECOGEMOS ENERGIA
                 Destroy(other.gameObject);
                 energia++;
                 break;
             case "Trigger Municion":
+                uiHub.SetActive(true);
                 lootSystem.calculateLoot();
+                controlHub.ActualizarHub(municion, armaSeleccionada);
                 Destroy(other.gameObject);
                 break;
 
             //OBJECTOS
-            case "Trigger Puerta":
-                break;
+            /*case "Trigger Puerta":
+                if (other.GetComponent<ControlPuertas>().energia < other.GetComponent<ControlPuertas>().energiaNecesaria)
+                {
+                    other.GetComponent<ControlPuertas>().energia++;
+                    energia--;
+                }
+                break;*/
         }
     }
 
-    public void OnJoin(InputAction.CallbackContext ctx)
+    void Kill()
     {
-        if (ctx.control.device is Keyboard) print("teclado");
-        else print("Mando");
+        if(vida<=0)
+        {
+            //bloquear movimiento
+            canMove = false;
+            playerInputActions.Player.Disable();
+            //Animacion muerte
+            //Activamos ui
+            uiKill.SetActive(true);
+        }
+    }
+
+    public void HabilitarMovimiento()
+    {
+        canMove = true;
+        playerInputActions.Player.Enable();
     }
 }

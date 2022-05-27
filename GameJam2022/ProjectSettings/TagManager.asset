@@ -9,6 +9,8 @@ TagManager:
   - pared transparente
   - Prota
   - Prota_Anims
+  - Ataque Enemigo
+  - Trigger Puerta
   layers:
   - Default
   - TransparentFX
