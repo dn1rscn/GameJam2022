@@ -2544,7 +2544,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1161966683}
-  m_LocalRotation: {x: 0.19417387, y: -0.000000008439447, z: 0.000000001670515, w: 0.98096716}
+  m_LocalRotation: {x: 0.19417387, y: 0.000000008439447, z: -0.000000001670515, w: 0.98096716}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -4741,7 +4741,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1682452644}
-  m_LocalRotation: {x: 0.2221901, y: -0.000000016781781, z: 0.0000000038217767, w: 0.97500336}
+  m_LocalRotation: {x: 0.2221901, y: -0.000000016781753, z: 0.0000000038216674, w: 0.97500336}
   m_LocalPosition: {x: 37.97, y: 8.3, z: -74.61}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -5333,6 +5333,14 @@ PrefabInstance:
     - target: {fileID: -9194332833247872624, guid: dbb6cf50c9771c44d9a455f398d214e7, type: 3}
       propertyPath: maxClip
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: -9194332833247872624, guid: dbb6cf50c9771c44d9a455f398d214e7, type: 3}
+      propertyPath: launchForce
+      value: 1500
+      objectReference: {fileID: 0}
+    - target: {fileID: -9194332833247872624, guid: dbb6cf50c9771c44d9a455f398d214e7, type: 3}
+      propertyPath: detonationTime
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 1243464321139227650, guid: dbb6cf50c9771c44d9a455f398d214e7, type: 3}
       propertyPath: m_Name
