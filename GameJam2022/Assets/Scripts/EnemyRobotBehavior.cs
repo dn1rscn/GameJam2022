@@ -27,6 +27,7 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
 
         IEnumerator PatrolAndWait()
         {
+            Actor.nav.isStopped = false;
             Actor.Animate(ANIMATION_WALK);
             // Actor.animator.Play("Enemigo_Andar");
             var r = Actor.patrolRadiusFromOrigin;
@@ -34,19 +35,29 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
             var z = Random.Range(-r, r);
             var dest = Actor.origin + new Vector3(x, Actor.origin.y, z);
             Actor.nav.SetDestination(dest);
-            while (Actor.nav.pathStatus != NavMeshPathStatus.PathComplete)
+            var backupBailout = new System.Diagnostics.Stopwatch();
+            backupBailout.Start();
+            while (Vector3.Distance(dest, Actor.transform.position) > Actor.patrolDistanceThreshold)
             {
+                if (backupBailout.ElapsedMilliseconds > Actor.failedPatrolBailoutTime * 1000f)
+                {
+                    Debug.LogWarning("Breaking patrol pattern, emergency bailout triggered: The AI considered that the patrol was stuck into an infinite loop.");
+                    break;
+                }
                 yield return new WaitForEndOfFrame();
             }
+            Debug.Log("Resting patrol.");
+            Actor.nav.isStopped = true;
             var idleTime = Random.Range(Actor.patrolIdleMinTime, Actor.patrolIdleMaxTime);
             // Actor.animator.Play("Enemigo_Standby");
-            // Debug.Log("Resting patrol.");
             // TODO: Fix this!!!!!
             // Monster drifts BEFORE reaching the stop point. (???)
             Actor.Animate(ANIMATION_IDLE);
             yield return new WaitForSeconds(idleTime);
             Actor.Animate(ANIMATION_WALK);
             yield return new WaitForEndOfFrame();
+            Actor.nav.isStopped = false;
+            Actor.StopAllCoroutines();
             Actor.StartCoroutine(PatrolAndWait());
         }
         public override void Update()
@@ -114,7 +125,10 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
             // Actor.animator.Play("Enemigo_Standby");
             Actor.Animate(ANIMATION_IDLE);
             yield return new WaitForSeconds(4f);
+            attacking = false;
+            Actor.weapon.SetActive(false);
             Actor.StopAllCoroutines();
+            Actor.nav.isStopped = false;
             Actor.currentState = new Patrol(Actor);
             Actor.currentState.Start();
         }
@@ -131,6 +145,7 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
             attacking = false;
             Actor.weapon.SetActive(false);
             Actor.Animate(ANIMATION_CHASE);
+            Actor.nav.isStopped = false;
         }
         private bool killingFocus = false, attacking = false;
         public override void Update()
@@ -139,6 +154,7 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
             if (!attacking && Actor.playerInWakeRadius)
             {
                 attacking = true;
+                Actor.nav.isStopped = true;
                 Actor.StartCoroutine(StartAttacking());
             }
             if (!killingFocus && !Actor.playerInRadius)
@@ -172,6 +188,10 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     public float patrolIdleMaxTime = 10f;
     [Range(0f, 60f)]
     public float patrolIdleMinTime = 2f;
+    public float
+        patrolDistanceThreshold = 4f,
+        chaseAttackRadius = 2.8f,
+        failedPatrolBailoutTime = 30f;
 
     private Vector3 PlayerDir { get => (player.transform.position - transform.position).normalized; }
     private float FacingFactor { get => Vector3.Dot(transform.forward, PlayerDir); }
