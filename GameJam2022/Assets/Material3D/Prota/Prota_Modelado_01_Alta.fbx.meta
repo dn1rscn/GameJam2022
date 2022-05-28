@@ -6,7 +6,77 @@ ModelImporter:
   - first:
       74: 1827226128182048838
     second: Take 001
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cloth_01_Obj_Fabric317320_FRONT_317321
+    second: {fileID: 2100000, guid: ab6f0282ecc4509469925165bb9af0c7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cloth_01_Obj_Fabric317320_SIDE_317321
+    second: {fileID: 2100000, guid: 7423be65147ce1d4a879b61e09b6a54a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cloth_01_Obj_Fabric318732_FRONT_318733
+    second: {fileID: 2100000, guid: 6d919df460cd5284e8e3b80e7d7410a6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cloth_01_Obj_Fabric318732_SIDE_318733
+    second: {fileID: 2100000, guid: 6d34509613c2a9c418d6bc3b3b2c60b0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cloth_01_Obj_Material2235097
+    second: {fileID: 2100000, guid: d5e88577abaffe14b956a845d423fa28, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cloth_01_Obj_Material2235098
+    second: {fileID: 2100000, guid: a90dd45b2bbef6b43a42b951fef1794b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cloth_01_Obj_Material2235100
+    second: {fileID: 2100000, guid: dcecae56947c2b84d8ba88285542a1f2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cloth_01_Obj_Material2235102
+    second: {fileID: 2100000, guid: cbda8a6c68d35624bbfaba1700c489a6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cloth_01_Obj_Material2235103
+    second: {fileID: 2100000, guid: d7a77e550c404914b8cf48feb8c19d92, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cloth_01_Obj_Material2235104
+    second: {fileID: 2100000, guid: dda5fb9552b0b2f47a0792d2779c2985, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cloth_01_Obj_Material2235105
+    second: {fileID: 2100000, guid: bf0bbf11cceb1994ab6fa090007979a9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cloth_01_Obj_Material2235106
+    second: {fileID: 2100000, guid: 706aeaee7d3388a45acb31438d9d66ac, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cloth_01_Obj_PANTS_FRONT_1165
+    second: {fileID: 2100000, guid: 610647ad30095e34abaa8697d7870f1c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: lambert1
+    second: {fileID: 2100000, guid: e4faf07f7858669499018db7285fe3ed, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -77,7 +147,7 @@ ModelImporter:
     normalCalculationMode: 4
     legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
     blendShapeNormalImportMode: 1
-    normalSmoothingSource: 0
+    normalSmoothingSource: 2
   referencedClips: []
   importAnimation: 1
   humanDescription:
@@ -91,7 +161,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 0.25
+    globalScale: 25
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0

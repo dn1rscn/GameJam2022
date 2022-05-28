@@ -9,7 +9,77 @@ ModelImporter:
   - first:
       74: -203655887218126122
     second: Idle_01
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cloth_01_Obj_Fabric317320_FRONT_317321
+    second: {fileID: 2100000, guid: 52c1b0508201cc344b3d365cd2265ed5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cloth_01_Obj_Fabric317320_SIDE_317321
+    second: {fileID: 2100000, guid: 9ca8c464ee453c04a980ee50b5f7c7b8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cloth_01_Obj_Fabric318732_FRONT_318733
+    second: {fileID: 2100000, guid: efb4b05f842c13448bc78c1daad843d8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cloth_01_Obj_Fabric318732_SIDE_318733
+    second: {fileID: 2100000, guid: 6477c9102dcdf6b4d876cc179482170d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cloth_01_Obj_Material2235097
+    second: {fileID: 2100000, guid: 5e11544d706e8694bb8828c78ba98af9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cloth_01_Obj_Material2235098
+    second: {fileID: 2100000, guid: d4d7038171121e849beab2b5f8adc202, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cloth_01_Obj_Material2235100
+    second: {fileID: 2100000, guid: ca96b0c8d82e8a0439c80ff72c900844, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cloth_01_Obj_Material2235102
+    second: {fileID: 2100000, guid: 13c65ca1a567fe542bc56e6a1cca0143, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cloth_01_Obj_Material2235103
+    second: {fileID: 2100000, guid: a2da9c9057f8f02469c792708bf79701, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cloth_01_Obj_Material2235104
+    second: {fileID: 2100000, guid: 32d376cea4fab7549a25ab764f5c8db6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cloth_01_Obj_Material2235105
+    second: {fileID: 2100000, guid: f636f654ffa66864a9ca12d92b627772, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cloth_01_Obj_Material2235106
+    second: {fileID: 2100000, guid: a9148bfa8ad9dc145a1cce7fa0bbdd49, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cloth_01_Obj_PANTS_FRONT_1165
+    second: {fileID: 2100000, guid: c089e9173e9b47440a72df6614006cd4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: lambert1
+    second: {fileID: 2100000, guid: 6c000dc399b8fec4bba31d418b7c42f3, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -100,12 +170,12 @@ ModelImporter:
   meshes:
     lODScreenPercentages: []
     globalScale: 25
-    meshCompression: 2
-    addColliders: 0
+    meshCompression: 3
+    addColliders: 1
     useSRGBMaterialColor: 1
     sortHierarchyByName: 1
     importVisibility: 1
-    importBlendShapes: 1
+    importBlendShapes: 0
     importCameras: 0
     importLights: 0
     nodeNameCollisionStrategy: 1
@@ -134,11 +204,11 @@ ModelImporter:
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 1
-    tangentImportMode: 3
+    tangentImportMode: 1
     normalCalculationMode: 4
     legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
-    blendShapeNormalImportMode: 1
-    normalSmoothingSource: 0
+    blendShapeNormalImportMode: 2
+    normalSmoothingSource: 2
   referencedClips: []
   importAnimation: 1
   humanDescription:
