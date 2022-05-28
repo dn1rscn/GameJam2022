@@ -11,6 +11,7 @@ public class ControlPlayer : MonoBehaviour
     private Rigidbody playerRigidbody;
     public Camera cam;
     public CinemachineFreeLook thirdPersonCamera;
+    private CinemachineBasicMultiChannelPerlin cameraNoise;
     LootSystem lootSystem;
     ControlHub controlHub;
 
@@ -99,6 +100,7 @@ public class ControlPlayer : MonoBehaviour
 
         playerInputActions.Player.Disparo.performed += ctx => disparo = ctx.ReadValueAsButton();
         playerInputActions.Player.Disparo.canceled += ctx => disparo = ctx.ReadValueAsButton();
+        playerInputActions.Player.Disparo.canceled += ctx => pararShakeCamara();
 
         playerInputActions.Player.Correr.performed += ctx => velocidad = velocidad * 2.5f;
         playerInputActions.Player.Correr.performed += ctx => Correr();
@@ -224,12 +226,22 @@ public class ControlPlayer : MonoBehaviour
                     weapons[armaSeleccionada].Shoot();
                     municion--;
                     controlHub.ActualizarHub(municion, armaSeleccionada);
+
                     print("DISPARO!!!");
+
+                    //Shake camara
+                    cameraNoise = GameObject.Find("Third Person Camera").GetComponentInChildren<CinemachineBasicMultiChannelPerlin>();
+                    cameraNoise.m_AmplitudeGain = 3;
+                    cameraNoise.m_FrequencyGain = 0.5f;
+                    Invoke("pararShakeCamara", 1.0f);
+
                     playerRigidbody.AddForce(Vector3.back * fuerzaRetroceso,ForceMode.Force);
                }
                 
             }
         }
+
+       
 
         //ESQUIVAR
         if (esquivar)
@@ -238,6 +250,15 @@ public class ControlPlayer : MonoBehaviour
             transform.Translate(me);
             Invoke("esquivarOff", 0.2f);
         }
+    }
+
+
+    void pararShakeCamara()
+    {
+        print("PararShake");
+        cameraNoise = GameObject.Find("Third Person Camera").GetComponentInChildren<CinemachineBasicMultiChannelPerlin>();
+        cameraNoise.m_AmplitudeGain = 0;
+        cameraNoise.m_FrequencyGain = 0;
     }
 
     //ANIMACIONES***************************
