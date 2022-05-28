@@ -275,7 +275,6 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     private bool playerInRadius = false, playerInWakeRadius = false;
     void ITriggerEnterListener.OnTriggerEnter(GameObject source, Collider other)
     {
-        Debug.Log($"Triggus: {other.gameObject} -> {other.gameObject == player}");
         if (other.gameObject != player) return;
         if (source == wakeGO)
         {
