@@ -9,6 +9,7 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     const int ANIMATION_WALK = 1;
     const int ANIMATION_CHASE = 2;
     const int ANIMATION_ATTACK = 3;
+    const int ANIMATION_SLEEP = 4;
     abstract class State
     {
         private EnemyRobotBehavior actor;
@@ -58,7 +59,35 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
             yield return new WaitForEndOfFrame();
             Actor.nav.isStopped = false;
             Actor.StopAllCoroutines();
-            Actor.StartCoroutine(PatrolAndWait());
+            if (watch.ElapsedMilliseconds > Actor.sleepAgainTime * 1000f)
+            {
+                Actor.StartCoroutine(GoRestAgain());
+            }
+            else
+            {
+                Actor.StartCoroutine(PatrolAndWait());
+            }
+        }
+        IEnumerator GoRestAgain()
+        {
+            yield return null;
+            var backupBailout = new System.Diagnostics.Stopwatch();
+            backupBailout.Start();
+            while (Vector3.Distance(Actor.origin, Actor.transform.position) > Actor.patrolDistanceThreshold)
+            {
+                if (backupBailout.ElapsedMilliseconds > Actor.failedPatrolBailoutTime * 1000f)
+                {
+                    Actor.origin = Actor.transform.position;
+                    Debug.LogWarning("Breaking patrol pattern, emergency bailout triggered: The AI considered that the origin rest position was stuck into an infinite loop.");
+                    break;
+                }
+                yield return new WaitForEndOfFrame();
+            }
+            Actor.Animate(ANIMATION_SLEEP);
+            yield return new WaitForSeconds(2f);
+            Actor.StopAllCoroutines();
+            Actor.currentState = new Vigilant(Actor);
+            Actor.currentState.Start();
         }
         public override void Update()
         {
@@ -70,9 +99,11 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
                 Actor.currentState.Start();
             }
         }
+        private System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
         public override void Start()
         {
             Debug.Log("Starting patrol...");
+            watch.Start();
             Actor.StartCoroutine(PatrolAndWait());
         }
     }
@@ -140,13 +171,15 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
         }
         IEnumerator StartAttacking()
         {
-            Actor.weapon.SetActive(true);
             Actor.Animate(ANIMATION_ATTACK);
-            yield return new WaitForSeconds(5f);
-            attacking = false;
+            yield return new WaitForSeconds(2f);
+            Actor.weapon.SetActive(true);
+            yield return new WaitForSeconds(2f);
             Actor.weapon.SetActive(false);
-            Actor.Animate(ANIMATION_CHASE);
+            yield return new WaitForSeconds(2f);
+            attacking = false;
             Actor.nav.isStopped = false;
+            Actor.Animate(ANIMATION_CHASE);
         }
         private bool killingFocus = false, attacking = false;
         public override void Update()
@@ -157,13 +190,34 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
                 attacking = true;
                 Actor.nav.isStopped = true;
                 Actor.StartCoroutine(StartAttacking());
+                return;
             }
             if (!killingFocus && !Actor.playerInRadius)
             {
                 Debug.Log("Killing focus (Lost sight)");
                 killingFocus = true;
                 Actor.StartCoroutine(KillFocus());
+                return;
             }
+        }
+    }
+    class ShockState : State
+    {
+        public ShockState(EnemyRobotBehavior actor) : base(actor) { }
+        IEnumerator AwaitShockRecovery()
+        {
+            Actor.Animate(ANIMATION_IDLE);
+            Actor.electroBall.SetActive(true);
+            yield return new WaitForSeconds(Actor.shockRecoverTime);
+            Actor.StopAllCoroutines();
+            Actor.currentState = new Patrol(Actor);
+            Actor.currentState.Start();
+            Actor.electroBall.SetActive(false);
+            Actor.nav.isStopped = false;
+        }
+        public override void Start()
+        {
+            Actor.StartCoroutine(AwaitShockRecovery());
         }
     }
     public enum InitialState
@@ -192,7 +246,10 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     public float
         patrolDistanceThreshold = 4f,
         chaseAttackRadius = 2.8f,
-        failedPatrolBailoutTime = 30f;
+        failedPatrolBailoutTime = 30f,
+        shockRecoverTime = 4f,
+        sleepAgainTime = 40f;
+    public bool testShock = false;
 
     private Vector3 PlayerDir { get => (player.transform.position - transform.position).normalized; }
     private float FacingFactor { get => Vector3.Dot(transform.forward, PlayerDir); }
@@ -216,20 +273,31 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     }
     void IDamageAcceptor.TakeDamage(Damage incoming)
     {
-        if (incoming.type != Damage.Type.KINETIC) return;
         var damage = incoming.ApplyReduction(armorReduction);
-        health -= damage.amount;
-        if (health <= 0)
+        Debug.Log($"Robot absorbs {incoming.amount} of {Damage.format(incoming.type)} damage (Which translates to {damage.amount} of true damage).");
+        if (incoming.type == Damage.Type.ELECTRIC)
         {
-            health = 0;
-            Die();
+            StopAllCoroutines();
+            nav.isStopped = true;
+            currentState = new ShockState(this);
+            currentState.Start();
+            return;
         }
-        Debug.Log($"Robot absorbs {damage.amount} of {incoming} damage.");
+        if (incoming.type == Damage.Type.KINETIC)
+        {
+            health -= damage.amount;
+            if (health <= 0)
+            {
+                health = 0;
+                Die();
+            }
+            return;
+        }
     }
 
     private Transform body;
     private Vector3 origin;
-    private GameObject weapon;
+    private GameObject weapon, electroBall;
     // Start is called before the first frame update
     void Start()
     {
@@ -238,6 +306,7 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
         origin = transform.position + new Vector3(0, 1f, 0);
         nav = GetComponent<NavMeshAgent>();
         body = transform.Find("Body");
+        electroBall = body.Find("ElectroBall").gameObject;
         var aid = body.Find("VisualAid");
         {
             var cone = aid.Find("ViewCone");
@@ -265,6 +334,16 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
                 break;
         }
         currentState.Start();
+        if (testShock)
+        {
+            StartCoroutine(WillShock());
+        }
+    }
+
+    IEnumerator WillShock()
+    {
+        yield return new WaitForSeconds(5f);
+        ((IDamageAcceptor)this).TakeDamage(new Damage(1, Damage.Type.ELECTRIC));
     }
 
     // Update is called once per frame
