@@ -232,7 +232,7 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     // Start is called before the first frame update
     void Start()
     {
-        weapon = GameObject.FindGameObjectWithTag("Killjoy");
+        weapon = GameObject.FindGameObjectWithTag("Ataque Enemigo");
         weapon.SetActive(false);
         origin = transform.position + new Vector3(0, 1f, 0);
         nav = GetComponent<NavMeshAgent>();
@@ -275,6 +275,7 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     private bool playerInRadius = false, playerInWakeRadius = false;
     void ITriggerEnterListener.OnTriggerEnter(GameObject source, Collider other)
     {
+        Debug.Log($"Triggus: {other.gameObject} -> {other.gameObject == player}");
         if (other.gameObject != player) return;
         if (source == wakeGO)
         {

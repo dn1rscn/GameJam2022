@@ -21,7 +21,7 @@ public class ControlUI : MonoBehaviour
         {
             if (Input.anyKey)
             {
-                print("key");
+                // print("key");
                 EmpezarJuego();
             }
         }
