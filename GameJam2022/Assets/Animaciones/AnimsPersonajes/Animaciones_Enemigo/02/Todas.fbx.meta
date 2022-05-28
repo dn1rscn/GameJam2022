@@ -41,7 +41,7 @@ ModelImporter:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
       name: Enemigo01_Texturizadov1
-    second: {fileID: 2800000, guid: 3deabd72079543b4384cab527cd5dbca, type: 3}
+    second: {fileID: 2800000, guid: 33f439fcdb77e9f46bc6c3f4d51e89c6, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -251,13 +251,13 @@ ModelImporter:
     secondaryUVPackMargin: 4
     useFileScale: 1
   tangentSpace:
-    normalSmoothAngle: 60
-    normalImportMode: 0
+    normalSmoothAngle: 85
+    normalImportMode: 1
     tangentImportMode: 3
     normalCalculationMode: 4
     legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
     blendShapeNormalImportMode: 1
-    normalSmoothingSource: 0
+    normalSmoothingSource: 2
   referencedClips: []
   importAnimation: 1
   humanDescription:
