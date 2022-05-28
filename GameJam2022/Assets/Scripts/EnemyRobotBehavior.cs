@@ -82,6 +82,7 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
         protected ShutdownMode(EnemyRobotBehavior actor) : base(actor) { }
         protected IEnumerator AwakeRoutine()
         {
+            Debug.Log($"Awaking NPC...");
             Actor.animator.speed = 1;
             yield return new WaitForSeconds(6f);
             var patrol = new Patrol(Actor);
