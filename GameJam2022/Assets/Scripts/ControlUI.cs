@@ -29,8 +29,15 @@ public class ControlUI : MonoBehaviour
 
     public void EmpezarJuego()
     {
-        uiInicio.SetActive(false);
+        //uiInicio.SetActive(false);
+        uiInicio.GetComponent<Animator>().Play("Anim_FundidoNegro");
+        Invoke("habilitarMovimiento", 2.0f);
+    }
+
+    void habilitarMovimiento()
+    {
         player.HabilitarMovimiento();
+
     }
 
     public void reintentar()
