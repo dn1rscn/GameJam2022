@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ControlPuertas : MonoBehaviour
 {
+    public Animator AnimPuertas;
     public int energiaNecesaria;
     public int energia;
     public bool puertaAbierta = false;
@@ -11,7 +12,7 @@ public class ControlPuertas : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        //AnimPuertas = gameObject.GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -21,6 +22,7 @@ public class ControlPuertas : MonoBehaviour
         {
             print("Abrir puerta");
             //ABRIR PUERTA
+            AnimPuertas.Play("AbrirPuerta2");
             puertaAbierta = true;
         }
     }

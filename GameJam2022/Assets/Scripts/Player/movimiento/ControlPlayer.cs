@@ -52,6 +52,7 @@ public class ControlPlayer : MonoBehaviour
         //Cursor.lockState = CursorLockMode.Locked;
 
         controlHub = GameObject.Find("ControlHub").GetComponent<ControlHub>();
+        lootSystem = GameObject.Find("ControlLoot").GetComponent<LootSystem>();
 
         weapons_GObj = new GameObject[]{
             pistol,
@@ -106,10 +107,12 @@ public class ControlPlayer : MonoBehaviour
 
         playerInputActions.Player.esquivar.performed += ctx => Esquivar();
 
+        
         playerInputActions.Player.Apuntar.performed += ctx => apuntar = true;
         playerInputActions.Player.Apuntar.performed += ctx => Apuntar();
         playerInputActions.Player.Apuntar.canceled += ctx => apuntar = false;
         playerInputActions.Player.Apuntar.canceled += ctx => ApuntarOff();
+        
     }
 
     void Update()
@@ -286,7 +289,7 @@ public class ControlPlayer : MonoBehaviour
         {
             //OBJECTOS
             case "Trigger Puerta":
-                if (other.GetComponent<ControlPuertas>().energia < other.GetComponent<ControlPuertas>().energiaNecesaria)
+                if (other.GetComponent<ControlPuertas>().energia < other.GetComponent<ControlPuertas>().energiaNecesaria&&energia>0)
                 {
                     other.GetComponent<ControlPuertas>().energia++;
                     energia--;
@@ -317,7 +320,7 @@ public class ControlPlayer : MonoBehaviour
             case "Trigger Municion":
                 uiHub.SetActive(true);
                 lootSystem.calculateLoot();
-                controlHub.ActualizarHub(municion, armaSeleccionada);
+                //controlHub.ActualizarHub(municion, armaSeleccionada);
                 Destroy(other.gameObject);
                 break;
 

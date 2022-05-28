@@ -11,6 +11,7 @@ TagManager:
   - Prota_Anims
   - Ataque Enemigo
   - Trigger Puerta
+  - Trigger Municion
   layers:
   - Default
   - TransparentFX
