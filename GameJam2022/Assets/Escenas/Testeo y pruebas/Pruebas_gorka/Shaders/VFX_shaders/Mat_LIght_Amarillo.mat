@@ -52,11 +52,11 @@ Material:
     m_Ints: []
     m_Floats:
     - _Float: 0
-    - _INtensity_1: 2.61
+    - _INtensity_1: 0.52
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Saturation: 1
+    - _Saturation: 2.03
     m_Colors:
-    - _Color: {r: 103.96829, g: 5.3003445, b: 2.446313, a: 1}
+    - _Color: {r: 264.02036, g: 23.112402, b: 0, a: 1}
     - _INtensity: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
