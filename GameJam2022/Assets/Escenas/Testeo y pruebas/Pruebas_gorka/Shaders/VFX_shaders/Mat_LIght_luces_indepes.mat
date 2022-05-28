@@ -52,10 +52,10 @@ Material:
     m_Ints: []
     m_Floats:
     - _Float: 2.44
-    - _INtensity_1: 4.6
+    - _INtensity_1: 1.78
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Saturation: 4.61
+    - _Saturation: 5.74
     m_Colors:
     - _Color: {r: 48.502926, g: 38.04151, b: 24.156359, a: 1}
     - _INtensity: {r: 0, g: 0, b: 0, a: 0}

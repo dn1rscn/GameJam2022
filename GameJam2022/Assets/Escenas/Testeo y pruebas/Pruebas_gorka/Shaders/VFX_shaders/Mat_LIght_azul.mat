@@ -55,7 +55,7 @@ Material:
     - _INtensity_1: 5.39
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Saturation: 1
+    - _Saturation: 1.59
     m_Colors:
     - _Color: {r: 0, g: 5.521569, b: 47.937256, a: 1}
     - _INtensity: {r: 0, g: 0, b: 0, a: 0}
