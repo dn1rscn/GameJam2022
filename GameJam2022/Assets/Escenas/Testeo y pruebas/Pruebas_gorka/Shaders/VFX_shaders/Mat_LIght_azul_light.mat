@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Mat_LIght_azul
+  m_Name: Mat_LIght_azul_light
   m_Shader: {fileID: -6465566751694194690, guid: 32afe32b3f74f9044856dc137374987f, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
@@ -52,10 +52,10 @@ Material:
     m_Ints: []
     m_Floats:
     - _Float: 0
-    - _INtensity_1: 5.39
+    - _INtensity_1: 0.38
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Saturation: 1.59
+    - _Saturation: 3.37
     m_Colors:
     - _Color: {r: 0, g: 5.521569, b: 47.937256, a: 1}
     - _INtensity: {r: 0, g: 0, b: 0, a: 0}
