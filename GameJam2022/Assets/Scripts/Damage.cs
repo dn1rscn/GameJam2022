@@ -19,6 +19,10 @@ public class Damage
         this.amount = amount;
         this.type = type;
     }
+    public Damage ApplyReduction(float factor)
+    {
+        return new Damage(amount - amount * factor, Type.TRUE);
+    }
     public static string format(Type type)
     {
         switch (type)
