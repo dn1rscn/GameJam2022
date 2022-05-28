@@ -58,7 +58,7 @@ AnimatorStateMachine:
   m_EntryPosition: {x: 200, y: 100, z: 0}
   m_ExitPosition: {x: 400, y: -20, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
-  m_DefaultState: {fileID: 4419841982836149800}
+  m_DefaultState: {fileID: -7264819158288252933}
 --- !u!1102 &-7264819158288252933
 AnimatorState:
   serializedVersion: 6
@@ -305,7 +305,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Enemigo_Activarse
-  m_Speed: 1
+  m_Speed: 0
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: -8071355029374165463}

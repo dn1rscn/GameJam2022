@@ -6,7 +6,12 @@ TagManager:
   tags:
   - Projectile
   - Trigger Energia
-  - Killjoy
+  - pared transparente
+  - Prota
+  - Prota_Anims
+  - Ataque Enemigo
+  - Trigger Puerta
+  - Trigger Municion
   layers:
   - Default
   - TransparentFX
@@ -18,8 +23,8 @@ TagManager:
   - Enemies
   - Allies
   - Neutral
-  - 
-  - 
+  - Paredes
+  - Floor
   - 
   - 
   - 

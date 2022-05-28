@@ -6,86 +6,292 @@ using Cinemachine;
 
 public class ControlPlayer : MonoBehaviour
 {
+    PlayerInputActions playerInputActions;
     public Animator animatorPlayer;
     private Rigidbody playerRigidbody;
-    private PlayerInput playerInput;
-    public Transform cam;
+    public Camera cam;
     public CinemachineFreeLook thirdPersonCamera;
+    private CinemachineBasicMultiChannelPerlin cameraNoise;
     LootSystem lootSystem;
+    ControlHub controlHub;
 
     Vector2 movimiento, rotate;
-    public bool disparo,apuntar,esquivar;
-    public float velocidad, velocidadGiro, velocidadEsquivar;
+    bool disparo, apuntar, esquivar, mouse;
+    public bool canMove=false;
+
+    public float velocidad, velocidadGiro, velocidadEsquivar,fuerzaRetroceso;
+    float turnSmothTime = 0.1f,turnSmoothVelocity;
+    float camRayLength = 100f;
+    int floorMask;
+    public int vida=2;
+
+    public Transform firePoint;
     //public float fuerza;
 
+    public LineRenderer lineApuntar;
     public GameObject arma;
     [Header("recolectables")]
     public int energia;
     public int municion;
 
+    Prota_Anims scr_protaAnims;
+
+    [Header("Armas")]
+    public int armaSeleccionada = 0;
+    public string armaSeleccionada_name;
+    public GameObject pistol, flamer, grenade, lightning;
+    private GameObject[] weapons_GObj;
+    private IShooting[] weapons;
+
+    [Header("UI")]
+    public GameObject uiKill;
+    public GameObject uiHub;
+
     private void Start()
     {
-        Cursor.visible = false;
+        //ursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
+
+        controlHub = GameObject.Find("ControlHub").GetComponent<ControlHub>();
+        lootSystem = GameObject.Find("ControlLoot").GetComponent<LootSystem>();
+
+        weapons_GObj = new GameObject[]{
+            pistol,
+            flamer,
+            grenade,
+            lightning
+        };
+
+        weapons = new IShooting[]{
+            pistol.GetComponent<IShooting>(),
+            flamer.GetComponent<IShooting>(),
+            grenade.GetComponent<IShooting>(),
+            lightning.GetComponent<IShooting>()
+        };
+
+        
     }
     private void Awake()
     {
+        floorMask = LayerMask.GetMask("Floor");
         print("iniciamos");
         playerRigidbody = GetComponent<Rigidbody>();
-        playerInput = GetComponent<PlayerInput>();
         //var thirdPersonCamera = GameObject.Find("Third Person Camera").GetComponent<CinemachineFreeLook>().m_XAxis.m_MaxSpeed = 300;
 
+        if (GameObject.FindGameObjectWithTag("Prota_Anims").GetComponent<Prota_Anims>())
+        {
+            scr_protaAnims = GameObject.FindGameObjectWithTag("Prota_Anims").GetComponent<Prota_Anims>();
+        }
+
         //ACTIVAMOS LOS PLAYER INPUTS
-        PlayerInputActions playerInputActions = new PlayerInputActions();
-        playerInputActions.Player.Enable();
+        playerInputActions = new PlayerInputActions();
+
+        if (canMove) playerInputActions.Player.Enable();
+        else playerInputActions.Player.Disable();
+        
         playerInputActions.Player.Movimiento.performed += ctx => movimiento = ctx.ReadValue<Vector2>();
+        playerInputActions.Player.Movimiento.performed += ctx => Andar();
         playerInputActions.Player.Movimiento.canceled += ctx => movimiento=Vector2.zero;
+        playerInputActions.Player.Movimiento.canceled += ctx => AndarOff();
+
 
         playerInputActions.Player.Giro.performed += ctx => rotate = ctx.ReadValue<Vector2>();
         playerInputActions.Player.Giro.canceled += ctx => rotate = Vector2.zero;
 
         playerInputActions.Player.Disparo.performed += ctx => disparo = ctx.ReadValueAsButton();
         playerInputActions.Player.Disparo.canceled += ctx => disparo = ctx.ReadValueAsButton();
+        playerInputActions.Player.Disparo.canceled += ctx => pararShakeCamara();
 
-        playerInputActions.Player.Correr.performed += ctx => velocidad=velocidad*2;
-        playerInputActions.Player.Correr.canceled += ctx => velocidad=velocidad/2;
+        playerInputActions.Player.Correr.performed += ctx => velocidad = velocidad * 2.5f;
+        playerInputActions.Player.Correr.performed += ctx => Correr();
+        playerInputActions.Player.Correr.canceled += ctx => velocidad=velocidad/2.5f;
+        playerInputActions.Player.Correr.canceled += ctx => CorrerOff();
 
         playerInputActions.Player.esquivar.performed += ctx => Esquivar();
 
+        
         playerInputActions.Player.Apuntar.performed += ctx => apuntar = true;
+        playerInputActions.Player.Apuntar.performed += ctx => Apuntar();
         playerInputActions.Player.Apuntar.canceled += ctx => apuntar = false;
+        playerInputActions.Player.Apuntar.canceled += ctx => ApuntarOff();
+        
     }
 
     void Update()
     {
+        //DETECTAMOS EL INPUT
+        InputSystem.onActionChange += (obj, change) =>
+        {
+            if (change == InputActionChange.ActionPerformed)
+            {
+                var inputAction = (InputAction)obj;
+                var lastControl = inputAction.activeControl;
+                var lastDevice = lastControl.device;
+
+                //bug.Log($"device: {lastDevice.name}");
+                if (lastDevice.name == "Mouse") mouse = true;
+                else mouse = false;
+            }
+        };
+
         //MOVIMIENTO
-        Vector3 m = new Vector3(movimiento.x,0.0f,movimiento.y) * velocidad * Time.deltaTime;
-        Vector3 d = new Vector2(0, rotate.x) * velocidadGiro*Time.deltaTime;
-        transform.Rotate(d, Space.World);
-        transform.Translate(m, Space.Self);
+        if (canMove)
+        {
+            Vector3 m = Vector3.zero;
+            Vector3 direction = Vector3.zero;
+            direction = new Vector3(movimiento.x, 0.0f, movimiento.y).normalized;
+            //giro sin apuntar
+            if (direction.magnitude >= 0.1f && !apuntar)
+            {
+                float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+                float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmothTime);
+                transform.rotation = Quaternion.Euler(0f, angle, 0f);
+            }
+            m = direction * velocidad * Time.deltaTime;
+            transform.Translate(m, Space.World);
+        }
+
+        //giro al apuntar
+        if (apuntar)
+        {
+            /*RaycastHit2D hitInfo = Physics2D.Raycast(firePoint.position, firePoint.forward);
+            if(hitInfo)
+            {
+                lineApuntar.SetPosition(0, firePoint.position);
+                lineApuntar.SetPosition(1, hitInfo.point);
+            }
+            else
+            {
+                lineApuntar.SetPosition(0, firePoint.position);
+                lineApuntar.SetPosition(1, firePoint.position + firePoint.forward * 100);
+            }*/
+            if (mouse) //GIRO CON EL MOUSE
+            {
+                Ray camRay = cam.ScreenPointToRay(Input.mousePosition);
+                RaycastHit floorHit;
+                if (Physics.Raycast(camRay, out floorHit, camRayLength, floorMask))
+                {
+                    Vector3 playerToMouse = floorHit.point - transform.position;
+                    playerToMouse.y = 0;
+
+                    var rotation = Quaternion.LookRotation(playerToMouse);
+                    playerRigidbody.MoveRotation(rotation);
+                }
+            }
+            else//GIRO CON EL MANDO
+            {
+                Vector2 dirGiro = new Vector2(rotate.x, rotate.y).normalized;
+                if (dirGiro.magnitude >= 0.1f)
+                {
+                    float targetAngleG = Mathf.Atan2(dirGiro.x, dirGiro.y) * Mathf.Rad2Deg;
+                    transform.rotation = Quaternion.Euler(0f, targetAngleG, 0f);
+                }
+            }
+
+        }
 
         //APUNTAR
         arma.SetActive(apuntar);
-         
-        
+
+        //ACTIVAMOS EL GAMEOBJECT DEL ARMA SELECCIONADA
+
+        if (armaSeleccionada <= 3)
+        {
+            armaSeleccionada_name = weapons_GObj[armaSeleccionada].name;
+        }
+        else
+            armaSeleccionada_name = weapons_GObj[0].name;
+
+        foreach (var weapon_GObj in weapons_GObj)
+        {
+            if(weapon_GObj.name != armaSeleccionada_name)
+            {
+                weapon_GObj.SetActive(false);
+            }
+            else
+            {
+                weapon_GObj.SetActive(true);
+            }
+        }
+
         //DISPARO
-        if(disparo&&apuntar)
+        if (disparo&&apuntar)
         {
             if (municion <= 0) Debug.LogError("NO TIENES MUNICION");
             else 
             {
-                print("DISPARO!!!");
-                //TODO:hacer la llamada a la función de disparo
+            //TODO:hacer la llamada a la función de disparo
+               if (weapons[armaSeleccionada].CanShoot())
+               {
+                    weapons[armaSeleccionada].Shoot();
+                    municion--;
+                    controlHub.ActualizarHub(municion, armaSeleccionada);
+
+                    print("DISPARO!!!");
+
+                    //Shake camara
+                    cameraNoise = GameObject.Find("Third Person Camera").GetComponentInChildren<CinemachineBasicMultiChannelPerlin>();
+                    cameraNoise.m_AmplitudeGain = 3;
+                    cameraNoise.m_FrequencyGain = 0.5f;
+                    Invoke("pararShakeCamara", 1.0f);
+
+                    playerRigidbody.AddForce(Vector3.back * fuerzaRetroceso,ForceMode.Force);
+               }
+                
             }
         }
+
+       
 
         //ESQUIVAR
         if (esquivar)
         {
             Vector3 me = new Vector3(movimiento.x, 0.0f, movimiento.y) * velocidadEsquivar * Time.deltaTime;
-            transform.Translate(me, Space.Self);
+            transform.Translate(me);
             Invoke("esquivarOff", 0.2f);
         }
     }
+
+
+    void pararShakeCamara()
+    {
+        print("PararShake");
+        cameraNoise = GameObject.Find("Third Person Camera").GetComponentInChildren<CinemachineBasicMultiChannelPerlin>();
+        cameraNoise.m_AmplitudeGain = 0;
+        cameraNoise.m_FrequencyGain = 0;
+    }
+
+    //ANIMACIONES***************************
+    void Andar()
+    {
+        scr_protaAnims.Andar(movimiento);
+    }
+    void AndarOff()
+    {
+        scr_protaAnims.AndarOff();
+    }
+
+
+    void Correr()
+    {
+        scr_protaAnims.Correr();
+    }
+    void CorrerOff()
+    {
+        scr_protaAnims.CorrerOff();
+    }
+
+
+    void Apuntar()
+    {
+        scr_protaAnims.Apuntar();
+
+    }
+    void ApuntarOff()
+    {
+        scr_protaAnims.ApuntarOff();
+    }
+
 
     void Esquivar()
     {
@@ -97,24 +303,75 @@ public class ControlPlayer : MonoBehaviour
         esquivar = false;
     }
 
+    //************************************
+    private void OnTriggerStay(Collider other)
+    {
+        switch (other.tag)
+        {
+            //OBJECTOS
+            case "Trigger Puerta":
+                if (other.GetComponent<ControlPuertas>().energia < other.GetComponent<ControlPuertas>().energiaNecesaria&&energia>0)
+                {
+                    other.GetComponent<ControlPuertas>().energia++;
+                    energia--;
+                }
+                break;
+        }
+    }
     private void OnTriggerEnter(Collider other)
     {
         // print(other.tag);
         switch(other.tag)
         {
+            //Enemigos
+            case "Ataque Enemigo pequeño":
+                vida--;
+                Kill();
+                break;
+            case "Ataque Enemigo":
+                vida-=2;
+                Kill();
+                break;
+
             //RECOLECTABLES
             case "Trigger Energia"://RECOGEMOS ENERGIA
                 Destroy(other.gameObject);
                 energia++;
                 break;
             case "Trigger Municion":
+                uiHub.SetActive(true);
                 lootSystem.calculateLoot();
+                //controlHub.ActualizarHub(municion, armaSeleccionada);
                 Destroy(other.gameObject);
                 break;
 
             //OBJECTOS
-            case "Trigger Puerta":
-                break;
+            /*case "Trigger Puerta":
+                if (other.GetComponent<ControlPuertas>().energia < other.GetComponent<ControlPuertas>().energiaNecesaria)
+                {
+                    other.GetComponent<ControlPuertas>().energia++;
+                    energia--;
+                }
+                break;*/
         }
+    }
+
+    void Kill()
+    {
+        if(vida<=0)
+        {
+            //bloquear movimiento
+            canMove = false;
+            playerInputActions.Player.Disable();
+            //Animacion muerte
+            //Activamos ui
+            uiKill.SetActive(true);
+        }
+    }
+
+    public void HabilitarMovimiento()
+    {
+        canMove = true;
+        playerInputActions.Player.Enable();
     }
 }

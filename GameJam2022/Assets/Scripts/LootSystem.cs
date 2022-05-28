@@ -18,7 +18,7 @@ public class LootSystem : MonoBehaviour
 
     public List<DropCurrency> LootTable = new List<DropCurrency>();
     [Range(0, 100)]
-    int dropChance;
+    int dropChance=100;
 
     public void calculateLoot()
     {
@@ -49,6 +49,9 @@ public class LootSystem : MonoBehaviour
                     //Instantiate(LootTable[j].item, transform.position, Quaternion.identity);
                     print(LootTable[j].name);
                     player.municion = LootTable[j].municion;
+                    player.armaSeleccionada = j;
+                    GameObject.Find("ControlHub").GetComponent<ControlHub>().ActualizarHub(player.municion,player.armaSeleccionada);
+                    player.uiHub.SetActive(true);
                     return;
                 }
                 randomValue -= LootTable[j].dropRarity;

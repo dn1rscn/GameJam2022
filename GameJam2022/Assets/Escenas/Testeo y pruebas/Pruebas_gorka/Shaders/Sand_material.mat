@@ -100,16 +100,16 @@ Material:
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
-    - _DistortAmplitude: 1.15
-    - _DistortNoisePeriod: 4.22
+    - _DistortAmplitude: 59.43
+    - _DistortNoisePeriod: 2.13
     - _DstBlend: 0
     - _EnvironmentReflections: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _GrainColorBlend: 0.05
-    - _GrainPeriod: 143
-    - _GrainSineStrengh: 1
+    - _GrainPeriod: 140.11
+    - _GrainSineStrengh: 4.21
     - _Metallic: 0
     - _NormalStrengh: 8.97
     - _OcclusionStrength: 1
@@ -118,21 +118,21 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _ShineDuneHeightMin: 0.78
-    - _Shinethrehold: 0.41
-    - _SineAmplitude: 0.64
-    - _SineFrequency: 1
-    - _SineRotation: 3.32
+    - _ShineDuneHeightMin: 1
+    - _Shinethrehold: -1.94
+    - _SineAmplitude: -4.5
+    - _SineFrequency: 9.54
+    - _SineRotation: 2.02
     - _Smoothnes: 0
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
-    - _SubstrateDuneHeightMax: 0.12
-    - _SubstrateGrainHeightMax: 0.28
-    - _SubstrateTightening: 1.7
+    - _SubstrateDuneHeightMax: 0.141
+    - _SubstrateGrainHeightMax: 0
+    - _SubstrateTightening: 7.7
     - _Surface: 0
-    - _Uvscale: 1
+    - _Uvscale: 2
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
@@ -140,10 +140,10 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SandColor: {r: 0, g: 0, b: 0, a: 0}
-    - _SandHighColor: {r: 0.9150943, g: 0.8469393, b: 0.5913581, a: 0}
-    - _SandLowColor: {r: 0.8867924, g: 0.75071, b: 0.33045566, a: 0}
-    - _ShineColor: {r: 0.83049625, g: 0.7311321, b: 1, a: 0}
+    - _SandHighColor: {r: 0.9339623, g: 0.632921, b: 0.39208794, a: 1}
+    - _SandLowColor: {r: 0.58431375, g: 0.5647059, b: 0.54901963, a: 1}
+    - _ShineColor: {r: 1, g: 0.9187345, b: 0.7688679, a: 0}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
-    - _SubstrateColor: {r: 0.9245283, g: 0.7478526, b: 0.5800107, a: 0}
+    - _SubstrateColor: {r: 0.1509434, g: 0.1509434, b: 0.1509434, a: 0}
     - _UvTiling: {r: 2, g: 2, b: 0, a: 0}
   m_BuildTextureStacks: []
