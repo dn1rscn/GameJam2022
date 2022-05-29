@@ -325,6 +325,7 @@ public class ControlPlayer : MonoBehaviour
                     other.GetComponent<ControlPuertas>().energia++;
                     energia--;
                     controlHub.ActualizarHubEnergia(energia);
+                    other.GetComponent<ControlPuertas>().ActualizarEnergia();
                 }
                 break;
         }
