@@ -30,11 +30,14 @@ public class ControlPlayer : MonoBehaviour
 
     public LineRenderer lineApuntar;
     public GameObject arma;
+    GameObject geometria_Arma;
+
     [Header("recolectables")]
     public int energia;
     public int municion;
 
     Prota_Anims scr_protaAnims;
+    ControlSFX scr_controlSFX;
 
     [Header("Armas")]
     public int armaSeleccionada = 0;
@@ -68,7 +71,6 @@ public class ControlPlayer : MonoBehaviour
             grenade.GetComponent<IShooting>(),
             lightning.GetComponent<IShooting>()
         };
-
         
     }
     private void Awake()
@@ -82,7 +84,14 @@ public class ControlPlayer : MonoBehaviour
         {
             scr_protaAnims = GameObject.FindGameObjectWithTag("Prota_Anims").GetComponent<Prota_Anims>();
         }
-
+        if (GameObject.Find("Player").GetComponent<ControlSFX>())
+        {
+            scr_controlSFX = GameObject.Find("Player").GetComponent<ControlSFX>();
+        }
+        if (GameObject.Find("GeometriaArma"))
+        {
+            geometria_Arma = GameObject.Find("GeometriaArma");
+        }
         //ACTIVAMOS LOS PLAYER INPUTS
         playerInputActions = new PlayerInputActions();
 
@@ -107,7 +116,7 @@ public class ControlPlayer : MonoBehaviour
         playerInputActions.Player.Correr.canceled += ctx => velocidad=velocidad/2.5f;
         playerInputActions.Player.Correr.canceled += ctx => CorrerOff();
 
-        playerInputActions.Player.esquivar.performed += ctx => Esquivar();
+        //playerInputActions.Player.esquivar.performed += ctx => Esquivar();
 
         
         playerInputActions.Player.Apuntar.performed += ctx => apuntar = true;
@@ -187,11 +196,11 @@ public class ControlPlayer : MonoBehaviour
                     transform.rotation = Quaternion.Euler(0f, targetAngleG, 0f);
                 }
             }
-
         }
 
         //APUNTAR
         arma.SetActive(apuntar);
+        geometria_Arma.SetActive(apuntar);
 
         //ACTIVAMOS EL GAMEOBJECT DEL ARMA SELECCIONADA
 
@@ -229,20 +238,20 @@ public class ControlPlayer : MonoBehaviour
 
                     print("DISPARO!!!");
 
+                    //VFX + Sonido de disparo
+                    scr_controlSFX.sfx_Disparo();
+
                     //Shake camara
                     cameraNoise = GameObject.Find("Third Person Camera").GetComponentInChildren<CinemachineBasicMultiChannelPerlin>();
                     cameraNoise.m_AmplitudeGain = 3;
                     cameraNoise.m_FrequencyGain = 0.5f;
-                    Invoke("pararShakeCamara", 1.0f);
+                    Invoke("pararShakeCamara", 0.5f);   
 
-                    playerRigidbody.AddForce(Vector3.back * fuerzaRetroceso,ForceMode.Force);
+                    //playerRigidbody.AddForce(Vector3.back * fuerzaRetroceso,ForceMode.Force);
                }
-                
             }
         }
-
-       
-
+        
         //ESQUIVAR
         if (esquivar)
         {
@@ -251,7 +260,6 @@ public class ControlPlayer : MonoBehaviour
             Invoke("esquivarOff", 0.2f);
         }
     }
-
 
     void pararShakeCamara()
     {
@@ -291,7 +299,7 @@ public class ControlPlayer : MonoBehaviour
     {
         scr_protaAnims.ApuntarOff();
     }
-
+    
 
     void Esquivar()
     {
@@ -336,12 +344,14 @@ public class ControlPlayer : MonoBehaviour
             //RECOLECTABLES
             case "Trigger Energia"://RECOGEMOS ENERGIA
                 Destroy(other.gameObject);
+                scr_controlSFX.sfx_recogerEnergia();
                 energia++;
                 break;
             case "Trigger Municion":
                 uiHub.SetActive(true);
                 lootSystem.calculateLoot();
                 //controlHub.ActualizarHub(municion, armaSeleccionada);
+                scr_controlSFX.sfx_recogerMunicion();
                 Destroy(other.gameObject);
                 break;
 
@@ -363,10 +373,25 @@ public class ControlPlayer : MonoBehaviour
             //bloquear movimiento
             canMove = false;
             playerInputActions.Player.Disable();
+            //ShakeCamaraMuerte
+            cameraNoise = GameObject.Find("Third Person Camera").GetComponentInChildren<CinemachineBasicMultiChannelPerlin>();
+            cameraNoise.m_AmplitudeGain = 3;
+            cameraNoise.m_FrequencyGain = 0.4f;
+            Invoke("pararShakeCamara", 0.5f);
+            
             //Animacion muerte
+            scr_protaAnims.Muerte();
+            scr_controlSFX.sfx_Muerte();
+
             //Activamos ui
-            uiKill.SetActive(true);
+            Invoke("activarUIMuerte", 2.0f);
+
         }
+    }
+
+    void activarUIMuerte()
+    {
+        uiKill.SetActive(true);
     }
 
     public void HabilitarMovimiento()

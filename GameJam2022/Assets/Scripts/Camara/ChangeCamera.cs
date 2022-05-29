@@ -7,7 +7,7 @@ public class ChangeCamera : MonoBehaviour
 { 
     [SerializeField]
     
-    private CinemachineVirtualCamera _followCam;
+    private CinemachineFreeLook _followCam;
 
 
     [SerializeField]
@@ -15,16 +15,26 @@ public class ChangeCamera : MonoBehaviour
     private CinemachineVirtualCamera _staticCam;
 
 
-    void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider coli)
     {
-        _followCam.Priority = 0;
-        _staticCam.Priority = 1;
+        print("coli.name");
+        if (coli.name == "ColliderCam_PuertaFinal")
+        {
+            print("Has chocado con la puerta final");
+            _followCam.Priority = 0;
+            _staticCam.Priority = 10;
+
+        }
     }
 
-    void OnTriggerExit(Collider other)
+    void OnTriggerExit(Collider coli)
     {
-        _followCam.Priority = 1;
-        _staticCam.Priority = 0;
-    }
+        if (coli.name == "ColliderCam_PuertaFinal")
+        {
+            print("Has salido de la puerta final");
+            _followCam.Priority = 10;
+            _staticCam.Priority = 0;
+        }
+       }
     
 }
