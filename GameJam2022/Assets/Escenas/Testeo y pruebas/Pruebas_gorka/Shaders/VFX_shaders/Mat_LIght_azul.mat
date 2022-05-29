@@ -52,7 +52,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _Float: 0
-    - _INtensity_1: 6.18
+    - _INtensity_1: 3.89
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Saturation: 0.86
