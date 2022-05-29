@@ -1076,7 +1076,6 @@ MonoBehaviour:
   shockRecoverTime: 4
   sleepAgainTime: 40
   testShock: 0
-  loot: []
 --- !u!195 &2355584311460194044
 NavMeshAgent:
   m_ObjectHideFlags: 0

@@ -7,6 +7,7 @@ public interface IEnemyAnimationReceiver
     void EnableAttackCollider();
     void DisableAttackCollider();
     void AttackEnd();
+    void ActivationEnd();
 }
 
 public class EnemyAnimatorEventPropagator : MonoBehaviour, IEnemyAnimationReceiver
@@ -26,6 +27,10 @@ public class EnemyAnimatorEventPropagator : MonoBehaviour, IEnemyAnimationReceiv
     public void EnableAttackCollider()
     {
         recev.EnableAttackCollider();
+    }
+    public void ActivationEnd()
+    {
+        recev.ActivationEnd();
     }
 
     private void Start()

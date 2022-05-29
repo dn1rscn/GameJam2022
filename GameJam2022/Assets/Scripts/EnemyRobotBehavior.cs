@@ -124,7 +124,10 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
         {
             Log($"Awaking NPC...");
             Actor.animator.speed = 1;
-            yield return new WaitForSeconds(6f);
+            while (Actor.activating)
+            {
+                yield return new WaitForEndOfFrame();
+            }
             var patrol = new Patrol(Actor);
             patrol.willSleep = true;
             Actor.currentState = patrol;
@@ -302,6 +305,11 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
         attacking = false;
         nav.isStopped = false;
         Animate(ANIMATION_CHASE);
+    }
+    bool activating = true;
+    public void ActivationEnd()
+    {
+        activating = false;
     }
 
     void DoBehavior(IEnumerator ik)
