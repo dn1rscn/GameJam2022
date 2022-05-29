@@ -51,7 +51,7 @@ public class LootSystem : MonoBehaviour
                     player.municion = LootTable[j].municion;
                     player.armaSeleccionada = j;
                     GameObject.Find("ControlHub").GetComponent<ControlHub>().ActualizarHub(player.municion,player.armaSeleccionada);
-                    player.uiHub.SetActive(true);
+                    player.uiHubMunicion.SetActive(true);
                     return;
                 }
                 randomValue -= LootTable[j].dropRarity;
