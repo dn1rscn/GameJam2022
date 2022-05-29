@@ -51,6 +51,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _CambioColor: 0
     - _Float: 0
     - _INtensity_1: 0.38
     - _QueueControl: 0
@@ -58,5 +59,6 @@ Material:
     - _Saturation: 3.37
     m_Colors:
     - _Color: {r: 0, g: 5.521569, b: 47.937256, a: 1}
+    - _ColorB: {r: 47.937256, g: 0, b: 0, a: 1}
     - _INtensity: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []

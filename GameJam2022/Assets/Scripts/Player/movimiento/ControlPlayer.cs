@@ -48,7 +48,8 @@ public class ControlPlayer : MonoBehaviour
 
     [Header("UI")]
     public GameObject uiKill;
-    public GameObject uiHub;
+    public GameObject uiHubMunicion;
+    public GameObject uiHubEnergia;
 
     private void Start()
     {
@@ -148,7 +149,7 @@ public class ControlPlayer : MonoBehaviour
         {
             Vector3 m = Vector3.zero;
             Vector3 direction = Vector3.zero;
-            direction = new Vector3(movimiento.x, 0.0f, movimiento.y).normalized;
+            direction = new Vector3(movimiento.x, 0.0f, movimiento.y)/*.normalized*/;
             //giro sin apuntar
             if (direction.magnitude >= 0.1f && !apuntar)
             {
@@ -157,7 +158,8 @@ public class ControlPlayer : MonoBehaviour
                 transform.rotation = Quaternion.Euler(0f, angle, 0f);
             }
             m = direction * velocidad * Time.deltaTime;
-            transform.Translate(m, Space.World);
+            //transform.Translate(m, Space.World);
+            playerRigidbody.velocity = direction*velocidad;
         }
 
         //giro al apuntar
@@ -322,6 +324,7 @@ public class ControlPlayer : MonoBehaviour
                 {
                     other.GetComponent<ControlPuertas>().energia++;
                     energia--;
+                    controlHub.ActualizarHubEnergia(energia);
                 }
                 break;
         }
@@ -343,12 +346,14 @@ public class ControlPlayer : MonoBehaviour
 
             //RECOLECTABLES
             case "Trigger Energia"://RECOGEMOS ENERGIA
+                uiHubEnergia.SetActive(true);
                 Destroy(other.gameObject);
                 scr_controlSFX.sfx_recogerEnergia();
                 energia++;
+                controlHub.ActualizarHubEnergia(energia);
                 break;
             case "Trigger Municion":
-                uiHub.SetActive(true);
+                uiHubMunicion.SetActive(true);
                 lootSystem.calculateLoot();
                 //controlHub.ActualizarHub(municion, armaSeleccionada);
                 scr_controlSFX.sfx_recogerMunicion();
