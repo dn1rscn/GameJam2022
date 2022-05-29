@@ -824,17 +824,17 @@ MonoBehaviour:
   player: {fileID: 6455610942880084052}
   LootTable:
   - name: "Munici\xF3n Pistola"
-    municion: 5
-    dropRarity: 40
+    municion: 10
+    dropRarity: 50
   - name: "Munici\xF3n Lanzallamas"
-    municion: 1000
-    dropRarity: 10
+    municion: 500
+    dropRarity: 20
   - name: "Munici\xF3n Granadas"
     municion: 5
     dropRarity: 30
   - name: "Munici\xF3n Rayo"
-    municion: 5
-    dropRarity: 20
+    municion: 0
+    dropRarity: 0
 --- !u!1 &4872239661578891893
 GameObject:
   m_ObjectHideFlags: 0
@@ -965,7 +965,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6711769344721003594}
-  m_LocalRotation: {x: 0.2740623, y: -0.000000016547583, z: 0.0000000047156217, w: 0.96171194}
+  m_LocalRotation: {x: 0.2740623, y: 0.000000016547583, z: -0.0000000047156217, w: 0.96171194}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1049,8 +1049,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6970492313621161943}
-  m_LocalRotation: {x: 0.30172154, y: 7.8139356e-10, z: 2.4729288e-10, w: 0.9533961}
-  m_LocalPosition: {x: 45.4, y: 9.200001, z: -39.31}
+  m_LocalRotation: {x: 0.3014944, y: 0.000000016447677, z: -0.000000005174366, w: 0.95346797}
+  m_LocalPosition: {x: 38.2, y: 9.200001, z: -9.92}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
