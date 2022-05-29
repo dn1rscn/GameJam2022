@@ -32,6 +32,13 @@ public class ControlPlayer : MonoBehaviour
     public GameObject arma;
     GameObject geometria_Arma;
 
+    [Header("Grounded")]
+    public bool isGrounded;
+    //public Transform feetPos;
+    public float checkRatius;
+    public LayerMask whatIsGround;
+    public float fuerzaCaida;
+
     [Header("recolectables")]
     public int energia;
     public int municion;
@@ -129,6 +136,13 @@ public class ControlPlayer : MonoBehaviour
 
     void Update()
     {
+        isGrounded = Physics.Raycast(transform.position, -Vector3.up, checkRatius, whatIsGround);
+        if(isGrounded == false)
+        {
+            print("caemos");
+            //playerRigidbody.velocity = Vector3.up * -fuerzaCaida;
+            playerRigidbody.AddForce(Vector3.down * fuerzaCaida, ForceMode.Force);
+        }
         //DETECTAMOS EL INPUT
         InputSystem.onActionChange += (obj, change) =>
         {
