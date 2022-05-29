@@ -271,6 +271,7 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
         failedPatrolBailoutTime = 30f,
         shockRecoverTime = 4f,
         sleepAgainTime = 40f;
+    [Header("Development & References")]
     public bool testShock = false;
 
     private Vector3 PlayerDir { get => (player.transform.position - transform.position).normalized; }
@@ -313,6 +314,18 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     void Die()
     {
         print("ENEMIGO MUERTO");
+        var loot = transform.Find("Loot");
+        for (int i = 0; i < loot.childCount; i++)
+        {
+            var child = loot.GetChild(i).gameObject;
+            Debug.Log($"Spawning {loot}...");
+            var r = 1f;
+            var x = Random.Range(-r, r);
+            var z = Random.Range(-r, r);
+            var pos = transform.position + new Vector3(x, 0.25f, z);
+            var inst = Object.Instantiate(child, pos, Quaternion.identity);
+            inst.SetActive(true);
+        }
         Destroy(gameObject);
     }
 
