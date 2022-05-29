@@ -1,11 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using FMODUnity;
+using FMOD;
+using FMODUnityResonance;
 
 public class ControlUI : MonoBehaviour
 {
     public GameObject uiInicio;
     public GameObject uiKill;
+    public GameObject cam;
 
     ControlPlayer player;
     // Start is called before the first frame update
@@ -30,6 +34,10 @@ public class ControlUI : MonoBehaviour
     public void EmpezarJuego()
     {
         //uiInicio.SetActive(false);
+
+        //Cambiar estado FMOD
+        cam.GetComponent< FMODUnity.StudioEventEmitter>().EventInstance.setParameterByName("State",1);
+
         uiInicio.GetComponent<Animator>().Play("Anim_FundidoNegro");
         Invoke("habilitarMovimiento", 2.0f);
     }

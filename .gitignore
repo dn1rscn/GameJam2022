@@ -60,3 +60,7 @@ crashlytics-build.properties
 
 *.cache
 GameJam2022/obj/Debug/
+GameJam2022/fmod_editor.log
+GameJam2022/fmod_editor.log
+GameJam2022/Assets/Plugins/FMOD/Cache/Editor/FMODStudioCache.asset
+GameJam2022/Assets/Plugins/FMOD/platforms/mac/lib/fmodstudio.bundle/Contents/Info.plist
