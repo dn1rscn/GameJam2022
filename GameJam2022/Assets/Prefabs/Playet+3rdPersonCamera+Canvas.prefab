@@ -338,7 +338,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7777778, y: 1}
+    m_SensorSize: {x: 1.6012793, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -623,7 +623,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7777778, y: 1}
+    m_SensorSize: {x: 1.6012793, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -1010,7 +1010,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7777778, y: 1}
+    m_SensorSize: {x: 1.6012793, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -1049,8 +1049,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6970492313621161943}
-  m_LocalRotation: {x: 0.3014944, y: 0.000000016447677, z: -0.000000005174366, w: 0.95346797}
-  m_LocalPosition: {x: 38.2, y: 9.200001, z: -9.92}
+  m_LocalRotation: {x: 0.30149436, y: -0.0000000010149138, z: -3.2109856e-10, w: 0.95346797}
+  m_LocalPosition: {x: 25.9, y: 9.200001, z: -126.42}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1262,7 +1262,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7136285389693683244}
-  m_LocalRotation: {x: 0.32885894, y: -1e-45, z: 1e-45, w: 0.9443791}
+  m_LocalRotation: {x: 0.32885894, y: 3e-45, z: -1e-45, w: 0.9443791}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1307,7 +1307,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7777778, y: 1}
+    m_SensorSize: {x: 1.6012793, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -1718,6 +1718,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1212371908093218365, guid: 7c1a556e5fed70c42af3922e95f1903f, type: 3}
       propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1335232078203208648, guid: 7c1a556e5fed70c42af3922e95f1903f, type: 3}
+      propertyPath: m_IsTrigger
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1390286546595138565, guid: 7c1a556e5fed70c42af3922e95f1903f, type: 3}
