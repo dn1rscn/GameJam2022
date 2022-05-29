@@ -354,9 +354,9 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
             currentState.Start();
             return;
         }
-        if (incoming.type == Damage.Type.KINETIC)
+        if (incoming.type == Damage.Type.KINETIC || incoming.type == Damage.Type.EXPLOSIVE)
         {
-            health -= damage.amount;
+            health -= Mathf.Max(0, damage.amount);
             Debug.Log($"Incoming: {damage.amount}, left: {health}");
             if (health <= 0)
             {
@@ -459,5 +459,5 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
             playerInWakeRadius = false;
     }
 
- 
+
 }
