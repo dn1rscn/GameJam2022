@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterListener, ITriggerExitListener
+public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterListener, ITriggerExitListener, IEnemyAnimationReceiver
 {
     const int ANIMATION_IDLE = 0;
     const int ANIMATION_WALK = 1;
@@ -66,11 +66,12 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
             Actor.Animate(ANIMATION_WALK);
             yield return new WaitForEndOfFrame();
             Actor.nav.isStopped = false;
-            if (watch.ElapsedMilliseconds > Actor.sleepAgainTime * 1000f)
-            {
-                Actor.DoBehavior(GoRestAgain());
-            }
-            else
+            // DISABLED! This part of the behavior was disabled.
+            // if (watch.ElapsedMilliseconds > Actor.sleepAgainTime * 1000f)
+            // {
+            //     Actor.DoBehavior(GoRestAgain());
+            // }
+            // else
             {
                 Actor.DoBehavior(PatrolAndWait());
             }
@@ -123,7 +124,10 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
         {
             Log($"Awaking NPC...");
             Actor.animator.speed = 1;
-            yield return new WaitForSeconds(6f);
+            while (Actor.activating)
+            {
+                yield return new WaitForEndOfFrame();
+            }
             var patrol = new Patrol(Actor);
             patrol.willSleep = true;
             Actor.currentState = patrol;
@@ -171,41 +175,41 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
         {
             Log("Enemy coasting to sleep...");
             // Actor.animator.Play("Enemigo_Standby");
+            Actor.nav.isStopped = true;
+            Actor.attacking = false;
+            Actor.nav.SetDestination(Actor.transform.position);
+            Actor.weapon.SetActive(false);
             Actor.Animate(ANIMATION_IDLE);
             yield return new WaitForSeconds(4f);
-            attacking = false;
-            Actor.weapon.SetActive(false);
             Actor.nav.isStopped = false;
+            killingFocus = false;
             Actor.currentState = new Patrol(Actor);
             Actor.currentState.Start();
         }
         IEnumerator KillFocus()
         {
+            Actor.Animate(ANIMATION_WALK);
             yield return new WaitForSeconds(Actor.patrolGiveUpTime);
             Actor.DoBehavior(GoSleep());
         }
         IEnumerator StartAttacking()
         {
+            Actor.attacking = true;
             Actor.Animate(ANIMATION_ATTACK);
-            yield return new WaitForSeconds(2f);
-            Actor.weapon.SetActive(true);
-            yield return new WaitForSeconds(2f);
-            Actor.weapon.SetActive(false);
-            yield return new WaitForSeconds(2f);
-            attacking = false;
-            Actor.nav.isStopped = false;
-            Actor.Animate(ANIMATION_CHASE);
+            while (Actor.attacking)
+            {
+                yield return new WaitForEndOfFrame();
+            }
         }
-        private bool killingFocus = false, attacking = false;
+        private bool killingFocus = false;
         public override string Tag => "Chasing";
 
         public override void Update()
         {
             Actor.nav.SetDestination(Actor.player.transform.position);
-            if (!attacking && Actor.playerInWakeRadius)
+            if (!Actor.attacking && Actor.playerInWakeRadius)
             {
                 Log("Attempting to attack the player");
-                attacking = true;
                 Actor.nav.isStopped = true;
                 Actor.DoBehavior(StartAttacking());
                 return;
@@ -257,7 +261,7 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     public float viewCone = 90f;
     [Range(0f, .9f)]
     public float armorReduction = 0;
-    public float patrolGiveUpTime = 20f;
+    public float patrolGiveUpTime = 10f;
     [Range(1f, 100f)]
     public float patrolRadiusFromOrigin = 30f;
     [Range(0f, 60f)]
@@ -270,6 +274,7 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
         failedPatrolBailoutTime = 30f,
         shockRecoverTime = 4f,
         sleepAgainTime = 40f;
+    [Header("Development & References")]
     public bool testShock = false;
 
     private Vector3 PlayerDir { get => (player.transform.position - transform.position).normalized; }
@@ -285,6 +290,28 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     private float health;
     private NavMeshAgent nav;
 
+    public void EnableAttackCollider()
+    {
+        weapon.SetActive(true);
+    }
+    public void DisableAttackCollider()
+    {
+        weapon.SetActive(false);
+    }
+
+    bool attacking = false;
+    public void AttackEnd()
+    {
+        attacking = false;
+        nav.isStopped = false;
+        Animate(ANIMATION_CHASE);
+    }
+    bool activating = true;
+    public void ActivationEnd()
+    {
+        activating = false;
+    }
+
     void DoBehavior(IEnumerator ik)
     {
         StopAllCoroutines();
@@ -295,6 +322,18 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     void Die()
     {
         print("ENEMIGO MUERTO");
+        var loot = transform.Find("Loot");
+        for (int i = 0; i < loot.childCount; i++)
+        {
+            var child = loot.GetChild(i).gameObject;
+            Debug.Log($"Spawning {loot}...");
+            var r = 1f;
+            var x = Random.Range(-r, r);
+            var z = Random.Range(-r, r);
+            var pos = transform.position + new Vector3(x, 0.25f, z);
+            var inst = Object.Instantiate(child, pos, Quaternion.identity);
+            inst.SetActive(true);
+        }
         Destroy(gameObject);
     }
 
@@ -372,7 +411,15 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
             StartCoroutine(WillShock());
         }
     }
-
+    private void OnCollisionEnter(Collision other)
+    {
+        var s = currentState;
+        if (s is Patrol)
+        {
+            StopAllCoroutines();
+            (s as Patrol).Start();
+        }
+    }
     IEnumerator WillShock()
     {
         yield return new WaitForSeconds(5f);
