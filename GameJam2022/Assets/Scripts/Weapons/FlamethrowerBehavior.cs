@@ -38,13 +38,18 @@ public class FlamethrowerBehavior : MonoBehaviour, IShooting
     // Update is called once per frame
     void Update()
     {
-        flames.SetActive(shooting);
+        //flames.SetActive(shooting);
         if (shooting)
         {
+            flames.GetComponent<ParticleSystem>().Play();
             foreach (var acceptor in acceptors)
             {
                 acceptor.TakeDamage(new Damage(this.damagePerSecond, Damage.Type.HEAT));
             }
+        } else if (!shooting)
+        {
+            flames.GetComponent<ParticleSystem>().Stop();
+
         }
         shooting = false;
     }

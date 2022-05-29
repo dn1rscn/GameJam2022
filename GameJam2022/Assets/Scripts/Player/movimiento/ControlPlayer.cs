@@ -17,24 +17,27 @@ public class ControlPlayer : MonoBehaviour
 
     Vector2 movimiento, rotate;
     bool disparo, apuntar, esquivar, mouse;
-    public bool canMove=false;
+    public bool canMove = false;
 
-    public float velocidad, velocidadGiro, velocidadEsquivar,fuerzaRetroceso;
-    float turnSmothTime = 0.1f,turnSmoothVelocity;
+    public float velocidad, velocidadGiro, velocidadEsquivar, fuerzaRetroceso;
+    float turnSmothTime = 0.1f, turnSmoothVelocity;
     float camRayLength = 100f;
     int floorMask;
-    public int vida=2;
+    public int vida = 2;
 
     public Transform firePoint;
     //public float fuerza;
 
     public LineRenderer lineApuntar;
     public GameObject arma;
+    GameObject geometria_Arma;
+
     [Header("recolectables")]
     public int energia;
     public int municion;
 
     Prota_Anims scr_protaAnims;
+    ControlSFX scr_controlSFX;
 
     [Header("Armas")]
     public int armaSeleccionada = 0;
@@ -69,7 +72,6 @@ public class ControlPlayer : MonoBehaviour
             lightning.GetComponent<IShooting>()
         };
 
-        
     }
     private void Awake()
     {
@@ -82,16 +84,23 @@ public class ControlPlayer : MonoBehaviour
         {
             scr_protaAnims = GameObject.FindGameObjectWithTag("Prota_Anims").GetComponent<Prota_Anims>();
         }
-
+        if (GameObject.Find("Player").GetComponent<ControlSFX>())
+        {
+            scr_controlSFX = GameObject.Find("Player").GetComponent<ControlSFX>();
+        }
+        if (GameObject.Find("GeometriaArma"))
+        {
+            geometria_Arma = GameObject.Find("GeometriaArma");
+        }
         //ACTIVAMOS LOS PLAYER INPUTS
         playerInputActions = new PlayerInputActions();
 
         if (canMove) playerInputActions.Player.Enable();
         else playerInputActions.Player.Disable();
-        
+
         playerInputActions.Player.Movimiento.performed += ctx => movimiento = ctx.ReadValue<Vector2>();
         playerInputActions.Player.Movimiento.performed += ctx => Andar();
-        playerInputActions.Player.Movimiento.canceled += ctx => movimiento=Vector2.zero;
+        playerInputActions.Player.Movimiento.canceled += ctx => movimiento = Vector2.zero;
         playerInputActions.Player.Movimiento.canceled += ctx => AndarOff();
 
 
@@ -104,17 +113,17 @@ public class ControlPlayer : MonoBehaviour
 
         playerInputActions.Player.Correr.performed += ctx => velocidad = velocidad * 2.5f;
         playerInputActions.Player.Correr.performed += ctx => Correr();
-        playerInputActions.Player.Correr.canceled += ctx => velocidad=velocidad/2.5f;
+        playerInputActions.Player.Correr.canceled += ctx => velocidad = velocidad / 2.5f;
         playerInputActions.Player.Correr.canceled += ctx => CorrerOff();
 
-        playerInputActions.Player.esquivar.performed += ctx => Esquivar();
+        //playerInputActions.Player.esquivar.performed += ctx => Esquivar();
 
-        
+
         playerInputActions.Player.Apuntar.performed += ctx => apuntar = true;
         playerInputActions.Player.Apuntar.performed += ctx => Apuntar();
         playerInputActions.Player.Apuntar.canceled += ctx => apuntar = false;
         playerInputActions.Player.Apuntar.canceled += ctx => ApuntarOff();
-        
+
     }
 
     void Update()
@@ -187,11 +196,11 @@ public class ControlPlayer : MonoBehaviour
                     transform.rotation = Quaternion.Euler(0f, targetAngleG, 0f);
                 }
             }
-
         }
 
         //APUNTAR
         arma.SetActive(apuntar);
+        geometria_Arma.SetActive(apuntar);
 
         //ACTIVAMOS EL GAMEOBJECT DEL ARMA SELECCIONADA
 
@@ -204,7 +213,7 @@ public class ControlPlayer : MonoBehaviour
 
         foreach (var weapon_GObj in weapons_GObj)
         {
-            if(weapon_GObj.name != armaSeleccionada_name)
+            if (weapon_GObj.name != armaSeleccionada_name)
             {
                 weapon_GObj.SetActive(false);
             }
@@ -215,33 +224,33 @@ public class ControlPlayer : MonoBehaviour
         }
 
         //DISPARO
-        if (disparo&&apuntar)
+        if (disparo && apuntar)
         {
             if (municion <= 0) Debug.LogError("NO TIENES MUNICION");
-            else 
+            else
             {
-            //TODO:hacer la llamada a la función de disparo
-               if (weapons[armaSeleccionada].CanShoot())
-               {
+                //TODO:hacer la llamada a la función de disparo
+                if (weapons[armaSeleccionada].CanShoot())
+                {
                     weapons[armaSeleccionada].Shoot();
                     municion--;
                     controlHub.ActualizarHub(municion, armaSeleccionada);
 
                     print("DISPARO!!!");
 
+                    //VFX + Sonido de disparo
+                    scr_controlSFX.sfx_Disparo();
+
                     //Shake camara
                     cameraNoise = GameObject.Find("Third Person Camera").GetComponentInChildren<CinemachineBasicMultiChannelPerlin>();
                     cameraNoise.m_AmplitudeGain = 3;
                     cameraNoise.m_FrequencyGain = 0.5f;
-                    Invoke("pararShakeCamara", 1.0f);
+                    Invoke("pararShakeCamara", 0.5f);
 
-                    playerRigidbody.AddForce(Vector3.back * fuerzaRetroceso,ForceMode.Force);
-               }
-                
+                    //playerRigidbody.AddForce(Vector3.back * fuerzaRetroceso,ForceMode.Force);
+                }
             }
         }
-
-       
 
         //ESQUIVAR
         if (esquivar)
@@ -252,10 +261,9 @@ public class ControlPlayer : MonoBehaviour
         }
     }
 
-
     void pararShakeCamara()
     {
-        print("PararShake");
+        // print("PararShake");
         cameraNoise = GameObject.Find("Third Person Camera").GetComponentInChildren<CinemachineBasicMultiChannelPerlin>();
         cameraNoise.m_AmplitudeGain = 0;
         cameraNoise.m_FrequencyGain = 0;
@@ -310,7 +318,7 @@ public class ControlPlayer : MonoBehaviour
         {
             //OBJECTOS
             case "Trigger Puerta":
-                if (other.GetComponent<ControlPuertas>().energia < other.GetComponent<ControlPuertas>().energiaNecesaria&&energia>0)
+                if (other.GetComponent<ControlPuertas>().energia < other.GetComponent<ControlPuertas>().energiaNecesaria && energia > 0)
                 {
                     other.GetComponent<ControlPuertas>().energia++;
                     energia--;
@@ -321,7 +329,7 @@ public class ControlPlayer : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         // print(other.tag);
-        switch(other.tag)
+        switch (other.tag)
         {
             //Enemigos
             case "Ataque Enemigo pequeño":
@@ -329,44 +337,61 @@ public class ControlPlayer : MonoBehaviour
                 Kill();
                 break;
             case "Ataque Enemigo":
-                vida-=2;
+                vida -= 2;
                 Kill();
                 break;
 
             //RECOLECTABLES
             case "Trigger Energia"://RECOGEMOS ENERGIA
                 Destroy(other.gameObject);
+                scr_controlSFX.sfx_recogerEnergia();
                 energia++;
                 break;
             case "Trigger Municion":
                 uiHub.SetActive(true);
                 lootSystem.calculateLoot();
                 //controlHub.ActualizarHub(municion, armaSeleccionada);
+                scr_controlSFX.sfx_recogerMunicion();
                 Destroy(other.gameObject);
                 break;
 
-            //OBJECTOS
-            /*case "Trigger Puerta":
-                if (other.GetComponent<ControlPuertas>().energia < other.GetComponent<ControlPuertas>().energiaNecesaria)
-                {
-                    other.GetComponent<ControlPuertas>().energia++;
-                    energia--;
-                }
-                break;*/
+                //OBJECTOS
+                /*case "Trigger Puerta":
+                    if (other.GetComponent<ControlPuertas>().energia < other.GetComponent<ControlPuertas>().energiaNecesaria)
+                    {
+                        other.GetComponent<ControlPuertas>().energia++;
+                        energia--;
+                    }
+                    break;*/
         }
     }
 
     void Kill()
     {
-        if(vida<=0)
+        if (vida <= 0)
         {
             //bloquear movimiento
             canMove = false;
             playerInputActions.Player.Disable();
+            //ShakeCamaraMuerte
+            cameraNoise = GameObject.Find("Third Person Camera").GetComponentInChildren<CinemachineBasicMultiChannelPerlin>();
+            cameraNoise.m_AmplitudeGain = 3;
+            cameraNoise.m_FrequencyGain = 0.4f;
+            Invoke("pararShakeCamara", 0.5f);
+
             //Animacion muerte
+            scr_protaAnims.Muerte();
+            scr_controlSFX.sfx_Muerte();
+
             //Activamos ui
-            uiKill.SetActive(true);
+            Invoke("activarUIMuerte", 2.0f);
+
         }
+    }
+
+    void activarUIMuerte()
+    {
+        uiKill.SetActive(true);
     }
 
     public void HabilitarMovimiento()

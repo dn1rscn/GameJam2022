@@ -65,5 +65,17 @@ public class Prota_Anims : MonoBehaviour
         animatorPlayer.SetLayerWeight(1, 0.0f);
     }
 
+    public void Muerte()
+    {
+        Time.timeScale = 0.25f;
+        Invoke("tiempoNormal", 5.0f);
+        animatorPlayer.Play("MuerteProta");
+
+    }
+
+    void tiempoNormal()
+    {
+        Time.timeScale = 1.0f;
+    }
 
 }

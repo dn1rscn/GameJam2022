@@ -12,11 +12,19 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     const int ANIMATION_SLEEP = 4;
     abstract class State
     {
+        public void Log(string msg)
+        {
+            Debug.Log($"AI: {msg}");
+        }
+        public abstract string Tag { get; }
         private EnemyRobotBehavior actor;
         public State(EnemyRobotBehavior actor) { this.actor = actor; }
         public EnemyRobotBehavior Actor { get => actor; }
         public virtual void Update() { }
-        public virtual void Start() { }
+        public virtual void Start()
+        {
+            Log($"Starting {Tag} mode");
+        }
         public virtual void TriggerAwake(Collider collider) { }
         public virtual void TriggerHear(Collider collider) { }
     }
@@ -47,7 +55,7 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
                 }
                 yield return new WaitForEndOfFrame();
             }
-            Debug.Log("Resting patrol.");
+            Log("Resting patrol.");
             Actor.nav.isStopped = true;
             var idleTime = Random.Range(Actor.patrolIdleMinTime, Actor.patrolIdleMaxTime);
             // Actor.animator.Play("Enemigo_Standby");
@@ -58,14 +66,13 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
             Actor.Animate(ANIMATION_WALK);
             yield return new WaitForEndOfFrame();
             Actor.nav.isStopped = false;
-            Actor.StopAllCoroutines();
             if (watch.ElapsedMilliseconds > Actor.sleepAgainTime * 1000f)
             {
-                Actor.StartCoroutine(GoRestAgain());
+                Actor.DoBehavior(GoRestAgain());
             }
             else
             {
-                Actor.StartCoroutine(PatrolAndWait());
+                Actor.DoBehavior(PatrolAndWait());
             }
         }
         IEnumerator GoRestAgain()
@@ -85,7 +92,6 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
             }
             Actor.Animate(ANIMATION_SLEEP);
             yield return new WaitForSeconds(2f);
-            Actor.StopAllCoroutines();
             Actor.currentState = new Vigilant(Actor);
             Actor.currentState.Start();
         }
@@ -93,18 +99,20 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
         {
             if (Actor.playerInRadius && Actor.PlayerInCone)
             {
-                Debug.Log("Stopping all routines.");
-                Actor.StopAllCoroutines();
+                Log("Player in radius and seen, starting chase...");
                 Actor.currentState = new Chasing(Actor);
                 Actor.currentState.Start();
             }
         }
         private System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
+
+        public override string Tag => "Patrol";
+
         public override void Start()
         {
-            Debug.Log("Starting patrol...");
+            base.Start();
             watch.Start();
-            Actor.StartCoroutine(PatrolAndWait());
+            Actor.DoBehavior(PatrolAndWait());
         }
     }
     /// <summary> Shared methods for vigilant and dormant </summary>
@@ -113,7 +121,7 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
         protected ShutdownMode(EnemyRobotBehavior actor) : base(actor) { }
         protected IEnumerator AwakeRoutine()
         {
-            Debug.Log($"Awaking NPC...");
+            Log($"Awaking NPC...");
             Actor.animator.speed = 1;
             yield return new WaitForSeconds(6f);
             var patrol = new Patrol(Actor);
@@ -124,7 +132,9 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
         }
         public override void Start()
         {
+            base.Start();
             // Actor.animator.Play("Enemigo_Activarse");
+            Debug.Log("Starting shutdown mode");
             Actor.animator.speed = 0;
         }
     }
@@ -132,14 +142,19 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     class Dormant : ShutdownMode
     {
         public Dormant(EnemyRobotBehavior actor) : base(actor) { }
+
+        public override string Tag => "Dormant";
     }
     /// <summary> Represents a sleep state that will react to players </summary>
     class Vigilant : ShutdownMode
     {
         public Vigilant(EnemyRobotBehavior actor) : base(actor) { }
+
+        public override string Tag => "Vigilant";
+
         override public void TriggerAwake(UnityEngine.Collider collider)
         {
-            Actor.StartCoroutine(AwakeRoutine());
+            Actor.DoBehavior(AwakeRoutine());
         }
     }
 
@@ -148,18 +163,18 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
         public Chasing(EnemyRobotBehavior actor) : base(actor) { }
         public override void Start()
         {
+            base.Start();
             // Actor.animator.Play("Enemigo_Perseguir");
             Actor.Animate(ANIMATION_CHASE);
         }
         IEnumerator GoSleep()
         {
-            Debug.Log("Enemy coasting to sleep...");
+            Log("Enemy coasting to sleep...");
             // Actor.animator.Play("Enemigo_Standby");
             Actor.Animate(ANIMATION_IDLE);
             yield return new WaitForSeconds(4f);
             attacking = false;
             Actor.weapon.SetActive(false);
-            Actor.StopAllCoroutines();
             Actor.nav.isStopped = false;
             Actor.currentState = new Patrol(Actor);
             Actor.currentState.Start();
@@ -167,7 +182,7 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
         IEnumerator KillFocus()
         {
             yield return new WaitForSeconds(Actor.patrolGiveUpTime);
-            Actor.StartCoroutine(GoSleep());
+            Actor.DoBehavior(GoSleep());
         }
         IEnumerator StartAttacking()
         {
@@ -182,34 +197,39 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
             Actor.Animate(ANIMATION_CHASE);
         }
         private bool killingFocus = false, attacking = false;
+        public override string Tag => "Chasing";
+
         public override void Update()
         {
             Actor.nav.SetDestination(Actor.player.transform.position);
             if (!attacking && Actor.playerInWakeRadius)
             {
+                Log("Attempting to attack the player");
                 attacking = true;
                 Actor.nav.isStopped = true;
-                Actor.StartCoroutine(StartAttacking());
+                Actor.DoBehavior(StartAttacking());
                 return;
             }
             if (!killingFocus && !Actor.playerInRadius)
             {
-                Debug.Log("Killing focus (Lost sight)");
+                Log("Killing focus (Lost sight)");
                 killingFocus = true;
-                Actor.StartCoroutine(KillFocus());
+                Actor.DoBehavior(KillFocus());
                 return;
             }
         }
     }
     class ShockState : State
     {
+        public override string Tag => "Electric Shock";
+
         public ShockState(EnemyRobotBehavior actor) : base(actor) { }
         IEnumerator AwaitShockRecovery()
         {
             Actor.Animate(ANIMATION_IDLE);
             Actor.electroBall.SetActive(true);
             yield return new WaitForSeconds(Actor.shockRecoverTime);
-            Actor.StopAllCoroutines();
+            Log("Shock end, resuming patrol.");
             Actor.currentState = new Patrol(Actor);
             Actor.currentState.Start();
             Actor.electroBall.SetActive(false);
@@ -217,7 +237,8 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
         }
         public override void Start()
         {
-            Actor.StartCoroutine(AwaitShockRecovery());
+            base.Start();
+            Actor.DoBehavior(AwaitShockRecovery());
         }
     }
     public enum InitialState
@@ -264,8 +285,18 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     private float health;
     private NavMeshAgent nav;
 
+    void DoBehavior(IEnumerator ik)
+    {
+        StopAllCoroutines();
+        StartCoroutine(ik);
+    }
+
     /// <summary> Called when health reaches 0 after damage. </summary>
-    void Die() { }
+    void Die()
+    {
+        print("ENEMIGO MUERTO");
+        Destroy(gameObject);
+    }
 
     void Animate(int id)
     {
@@ -286,6 +317,7 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
         if (incoming.type == Damage.Type.KINETIC)
         {
             health -= damage.amount;
+            Debug.Log($"Incoming: {damage.amount}, left: {health}");
             if (health <= 0)
             {
                 health = 0;
@@ -301,6 +333,7 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     // Start is called before the first frame update
     void Start()
     {
+        health = initialHealth;
         weapon = GameObject.FindGameObjectWithTag("Ataque Enemigo");
         weapon.SetActive(false);
         origin = transform.position + new Vector3(0, 1f, 0);
@@ -358,6 +391,7 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
         if (other.gameObject != player) return;
         if (source == wakeGO)
         {
+            playerInRadius = true;
             playerInWakeRadius = true;
             currentState.TriggerAwake(other);
         }

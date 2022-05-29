@@ -14,7 +14,7 @@ AnimatorStateMachine:
     m_Position: {x: 30, y: 180, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 6222193324561482965}
-    m_Position: {x: 290, y: 250, z: 0}
+    m_Position: {x: 310, y: 260, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -1432207192772514373}
     m_Position: {x: 30, y: 300, z: 0}
@@ -26,21 +26,24 @@ AnimatorStateMachine:
     m_Position: {x: 30, y: 370, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -2953314634312957584}
-    m_Position: {x: 290, y: 380, z: 0}
+    m_Position: {x: 290, y: 370, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 2788915383971602802}
-    m_Position: {x: 520, y: 180, z: 0}
+    m_Position: {x: 540, y: 180, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -4457325012201652710}
-    m_Position: {x: 520, y: 250, z: 0}
+    m_Position: {x: 540, y: 260, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: -891284245131956882}
+    m_Position: {x: -10, y: -20, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
   m_StateMachineTransitions: {}
   m_StateMachineBehaviours: []
-  m_AnyStatePosition: {x: -150, y: 120, z: 0}
+  m_AnyStatePosition: {x: -210, y: 100, z: 0}
   m_EntryPosition: {x: 50, y: 100, z: 0}
-  m_ExitPosition: {x: 800, y: 120, z: 0}
+  m_ExitPosition: {x: 560, y: 110, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
   m_DefaultState: {fileID: 6984727911305771420}
 --- !u!1102 &-8999911851887644202
@@ -511,6 +514,32 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1102 &-891284245131956882
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: MuerteProta
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: -203655887218126122, guid: 187d2dc77175f7f49acb496fb7162e3f, type: 3}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!1107 &-814275173983343128
 AnimatorStateMachine:
   serializedVersion: 6
@@ -696,7 +725,7 @@ BlendTree:
     m_Motion: {fileID: -203655887218126122, guid: ecf7cb7b7592cdb499785596959ef3ec, type: 3}
     m_Threshold: 0.25
     m_Position: {x: 0.01, y: 0.1}
-    m_TimeScale: 1
+    m_TimeScale: 1.1
     m_CycleOffset: 0
     m_DirectBlendParameter: Blend
     m_Mirror: 0
@@ -704,7 +733,7 @@ BlendTree:
     m_Motion: {fileID: -203655887218126122, guid: f7767e23316ba694b99cd15e2f6063f0, type: 3}
     m_Threshold: 0.5
     m_Position: {x: 0.01, y: -0.1}
-    m_TimeScale: 1
+    m_TimeScale: 1.25
     m_CycleOffset: 0
     m_DirectBlendParameter: Blend
     m_Mirror: 0
@@ -712,7 +741,7 @@ BlendTree:
     m_Motion: {fileID: -203655887218126122, guid: e7a7c5da8a3cf6d4394bb31081208a66, type: 3}
     m_Threshold: 0.75
     m_Position: {x: -1.3, y: 0}
-    m_TimeScale: 1
+    m_TimeScale: 1.5
     m_CycleOffset: 0
     m_DirectBlendParameter: Blend
     m_Mirror: 0
@@ -720,7 +749,7 @@ BlendTree:
     m_Motion: {fileID: -203655887218126122, guid: 7f80d596cf248834cbb40ff63cf92136, type: 3}
     m_Threshold: 1
     m_Position: {x: 1.3, y: 0}
-    m_TimeScale: 1
+    m_TimeScale: 1.5
     m_CycleOffset: 0
     m_DirectBlendParameter: Blend
     m_Mirror: 0
@@ -728,7 +757,7 @@ BlendTree:
     m_Motion: {fileID: -203655887218126122, guid: a04adfb93d7b78045930f58dae3cbd3d, type: 3}
     m_Threshold: 1.25
     m_Position: {x: 0, y: 1.3}
-    m_TimeScale: 1
+    m_TimeScale: 1.5
     m_CycleOffset: 0
     m_DirectBlendParameter: EjeX
     m_Mirror: 0
@@ -736,7 +765,7 @@ BlendTree:
     m_Motion: {fileID: -203655887218126122, guid: 723284afd7457824cb3f1db39ea87fa1, type: 3}
     m_Threshold: 1.5
     m_Position: {x: 0, y: -1.3}
-    m_TimeScale: 1
+    m_TimeScale: 1.5
     m_CycleOffset: 0
     m_DirectBlendParameter: EjeX
     m_Mirror: 0
