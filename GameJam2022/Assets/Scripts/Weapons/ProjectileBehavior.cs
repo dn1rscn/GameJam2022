@@ -31,7 +31,7 @@ public class ProjectileBehavior : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter(Collider col)
+    void OnCollisionEnter(Collision col)
     {
         timer.Restart();
         dead = true;
@@ -40,10 +40,18 @@ public class ProjectileBehavior : MonoBehaviour
         var rigid = GetComponent<Rigidbody>();
         rigid.velocity = new Vector3(0, 0, 0);
         rigid.detectCollisions = false;
-        var collided = col.GetComponentInParent<IDamageAcceptor>();
+        var collided = col.gameObject.GetComponentInParent<IDamageAcceptor>();
+
         if (collided != null)
         {
             collided.TakeDamage(Damage);
         }
+        Destroy(gameObject);
+    }
+
+        void OnTriggerEnter(Collider col)
+    {
+        //if col.
+        
     }
 }

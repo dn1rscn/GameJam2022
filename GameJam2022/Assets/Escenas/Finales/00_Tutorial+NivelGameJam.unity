@@ -9492,11 +9492,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5611481747356307212, guid: 13bd05449100f0e41829eed5414faadb, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.000000016659078
+      value: 0.000000016659083
       objectReference: {fileID: 0}
     - target: {fileID: 5611481747356307212, guid: 13bd05449100f0e41829eed5414faadb, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.0000000043051833
+      value: -0.000000004305185
       objectReference: {fileID: 0}
     - target: {fileID: 5731685796970651632, guid: 13bd05449100f0e41829eed5414faadb, type: 3}
       propertyPath: m_LocalPosition.x
@@ -9520,11 +9520,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5731685796970651632, guid: 13bd05449100f0e41829eed5414faadb, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.000000016781753
+      value: 0.000000016781781
       objectReference: {fileID: 0}
     - target: {fileID: 5731685796970651632, guid: 13bd05449100f0e41829eed5414faadb, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.000000003821668
+      value: -0.0000000038217767
       objectReference: {fileID: 0}
     - target: {fileID: 5985613518882542009, guid: 13bd05449100f0e41829eed5414faadb, type: 3}
       propertyPath: m_Enabled
@@ -9732,11 +9732,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6731298438511529847, guid: 13bd05449100f0e41829eed5414faadb, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.000000016776278
+      value: 0.000000016776282
       objectReference: {fileID: 0}
     - target: {fileID: 6731298438511529847, guid: 13bd05449100f0e41829eed5414faadb, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.0000000038230876
+      value: -0.0000000038230885
       objectReference: {fileID: 0}
     - target: {fileID: 6790773870578484992, guid: 13bd05449100f0e41829eed5414faadb, type: 3}
       propertyPath: m_LocalPosition.x
@@ -9996,21 +9996,51 @@ MonoBehaviour:
   CollisionTag: 
   EventReference:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
+      Data1: -852666596
+      Data2: 1148990840
+      Data3: -1908512334
+      Data4: -2081777807
+    Path: event:/FX/Laser Shot
   Event: 
   PlayEvent: 11
-  StopEvent: 12
+  StopEvent: 0
   AllowFadeout: 1
   TriggerOnce: 0
   Preload: 0
   Params: []
   OverrideAttenuation: 0
-  OverrideMinDistance: -1
-  OverrideMaxDistance: -1
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
+--- !u!114 &2027458194
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2027458189}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -852666596
+      Data2: 1148990840
+      Data3: -1908512334
+      Data4: -2081777807
+    Path: event:/FX/Laser Shot
+  Event: 
+  PlayEvent: 11
+  StopEvent: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1001 &2027968284
 PrefabInstance:
   m_ObjectHideFlags: 0
