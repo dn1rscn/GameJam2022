@@ -12,11 +12,15 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     const int ANIMATION_SLEEP = 4;
     abstract class State
     {
+        public abstract string Tag { get; }
         private EnemyRobotBehavior actor;
         public State(EnemyRobotBehavior actor) { this.actor = actor; }
         public EnemyRobotBehavior Actor { get => actor; }
         public virtual void Update() { }
-        public virtual void Start() { }
+        public virtual void Start()
+        {
+            Debug.Log($"AI: Starting {Tag} mode");
+        }
         public virtual void TriggerAwake(Collider collider) { }
         public virtual void TriggerHear(Collider collider) { }
     }
@@ -93,16 +97,19 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
         {
             if (Actor.playerInRadius && Actor.PlayerInCone)
             {
-                Debug.Log("Stopping all routines.");
+                Debug.Log("Player in radius and seen, starting chase...");
                 Actor.StopAllCoroutines();
                 Actor.currentState = new Chasing(Actor);
                 Actor.currentState.Start();
             }
         }
         private System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
+
+        public override string Tag => "Patrol";
+
         public override void Start()
         {
-            Debug.Log("Starting patrol...");
+            base.Start();
             watch.Start();
             Actor.StartCoroutine(PatrolAndWait());
         }
@@ -124,7 +131,9 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
         }
         public override void Start()
         {
+            base.Start();
             // Actor.animator.Play("Enemigo_Activarse");
+            Debug.Log("Starting shutdown mode");
             Actor.animator.speed = 0;
         }
     }
@@ -132,11 +141,16 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     class Dormant : ShutdownMode
     {
         public Dormant(EnemyRobotBehavior actor) : base(actor) { }
+
+        public override string Tag => "Dormant";
     }
     /// <summary> Represents a sleep state that will react to players </summary>
     class Vigilant : ShutdownMode
     {
         public Vigilant(EnemyRobotBehavior actor) : base(actor) { }
+
+        public override string Tag => "Vigilant";
+
         override public void TriggerAwake(UnityEngine.Collider collider)
         {
             Actor.StartCoroutine(AwakeRoutine());
@@ -148,6 +162,7 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
         public Chasing(EnemyRobotBehavior actor) : base(actor) { }
         public override void Start()
         {
+            base.Start();
             // Actor.animator.Play("Enemigo_Perseguir");
             Actor.Animate(ANIMATION_CHASE);
         }
@@ -182,6 +197,9 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
             Actor.Animate(ANIMATION_CHASE);
         }
         private bool killingFocus = false, attacking = false;
+
+        public override string Tag => "Chasing";
+
         public override void Update()
         {
             Actor.nav.SetDestination(Actor.player.transform.position);
@@ -203,6 +221,8 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     }
     class ShockState : State
     {
+        public override string Tag => "Electric Shock";
+
         public ShockState(EnemyRobotBehavior actor) : base(actor) { }
         IEnumerator AwaitShockRecovery()
         {
@@ -217,6 +237,7 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
         }
         public override void Start()
         {
+            base.Start();
             Actor.StartCoroutine(AwaitShockRecovery());
         }
     }
@@ -268,7 +289,6 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     void Die()
     {
         print("ENEMIGO MUERTO");
-
         Destroy(gameObject);
     }
 
@@ -296,7 +316,6 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
             {
                 health = 0;
                 Die();
-
             }
             return;
         }
@@ -309,7 +328,6 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     void Start()
     {
         health = initialHealth;
-
         weapon = GameObject.FindGameObjectWithTag("Ataque Enemigo");
         weapon.SetActive(false);
         origin = transform.position + new Vector3(0, 1f, 0);
@@ -367,6 +385,7 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
         if (other.gameObject != player) return;
         if (source == wakeGO)
         {
+            playerInRadius = true;
             playerInWakeRadius = true;
             currentState.TriggerAwake(other);
         }
