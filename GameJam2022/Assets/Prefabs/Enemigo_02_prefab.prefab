@@ -1062,8 +1062,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   initialState: 1
-  maxHealth: 100
-  initialHealth: 100
+  maxHealth: 2
+  initialHealth: 2
   viewCone: 90
   armorReduction: 0
   patrolGiveUpTime: 5
@@ -1076,6 +1076,7 @@ MonoBehaviour:
   shockRecoverTime: 4
   sleepAgainTime: 40
   testShock: 0
+  weapon: {fileID: 8632051431673087057}
 --- !u!195 &2355584311460194044
 NavMeshAgent:
   m_ObjectHideFlags: 0

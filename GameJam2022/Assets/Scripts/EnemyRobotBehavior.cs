@@ -293,6 +293,7 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     public void EnableAttackCollider()
     {
         weapon.SetActive(true);
+
     }
     public void DisableAttackCollider()
     {
@@ -368,12 +369,13 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
 
     private Transform body;
     private Vector3 origin;
-    private GameObject weapon, electroBall;
+    public GameObject weapon;
+    private GameObject electroBall;
     // Start is called before the first frame update
     void Start()
     {
         health = initialHealth;
-        weapon = GameObject.FindGameObjectWithTag("Ataque Enemigo");
+        //weapon = GameObject.
         weapon.SetActive(false);
         origin = transform.position + new Vector3(0, 1f, 0);
         nav = GetComponent<NavMeshAgent>();
@@ -456,4 +458,6 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
         if (source == wakeGO)
             playerInWakeRadius = false;
     }
+
+ 
 }

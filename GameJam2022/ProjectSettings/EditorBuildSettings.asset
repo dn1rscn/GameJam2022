@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Escenas/Finales/00_Tutorial+NivelGameJam.unity
-    guid: 23ace8e1bb5717c4aa2a1b51adb0da84
+    path: Assets/Escenas/Finales/00_Tutorial+NivelGameJam_Backup.unity
+    guid: 8e5e890307465ac47baba4fcad692373
   m_configObjects: {}

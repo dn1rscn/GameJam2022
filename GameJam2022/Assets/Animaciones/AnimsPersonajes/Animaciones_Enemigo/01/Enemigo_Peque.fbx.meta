@@ -5,10 +5,10 @@ ModelImporter:
   internalIDToNameTable:
   - first:
       74: 5598459874121926588
-    second: OFF
+    second: OFF_peque
   - first:
       74: -2616906438459429332
-    second: Activarse
+    second: Standby_peque
   - first:
       74: -1055766231766805323
     second: Andar
@@ -18,6 +18,18 @@ ModelImporter:
   - first:
       74: 6692522999438689154
     second: Muerte
+  - first:
+      74: -3682666870211266106
+    second: Andar_peque
+  - first:
+      74: 775287454530964365
+    second: Atacar_peque
+  - first:
+      74: 8824655843357881790
+    second: Muerte_peque
+  - first:
+      74: 3557165136228656592
+    second: Activarse_peque
   externalObjects:
   - first:
       type: UnityEngine:Material
@@ -73,7 +85,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: OFF
+      name: OFF_peque
       takeName: OFF
       internalID: 0
       firstFrame: 5
@@ -102,7 +114,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 5
     - serializedVersion: 16
-      name: Activarse
+      name: Activarse_peque
       takeName: Activarse
       internalID: 0
       firstFrame: 10
@@ -131,7 +143,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Andar
+      name: Andar_peque
       takeName: Andar
       internalID: 0
       firstFrame: 79
@@ -160,7 +172,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 79
     - serializedVersion: 16
-      name: Atacar
+      name: Atacar_peque
       takeName: Atacar
       internalID: 0
       firstFrame: 105
@@ -189,7 +201,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Muerte
+      name: Muerte_peque
       takeName: Muerte
       internalID: 0
       firstFrame: 180
@@ -217,6 +229,35 @@ ModelImporter:
       maskType: 3
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Standby_peque
+      takeName: Activarse
+      internalID: 0
+      firstFrame: 60
+      lastFrame: 60
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 10
     isReadable: 0
   meshes:
     lODScreenPercentages: []
