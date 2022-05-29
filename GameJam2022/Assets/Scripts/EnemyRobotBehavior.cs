@@ -265,7 +265,12 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     private NavMeshAgent nav;
 
     /// <summary> Called when health reaches 0 after damage. </summary>
-    void Die() { }
+    void Die()
+    {
+        print("ENEMIGO MUERTO");
+
+        Destroy(gameObject);
+    }
 
     void Animate(int id)
     {
@@ -286,10 +291,12 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
         if (incoming.type == Damage.Type.KINETIC)
         {
             health -= damage.amount;
+            Debug.Log($"Incoming: {damage.amount}, left: {health}");
             if (health <= 0)
             {
                 health = 0;
                 Die();
+
             }
             return;
         }
@@ -301,6 +308,8 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     // Start is called before the first frame update
     void Start()
     {
+        health = initialHealth;
+
         weapon = GameObject.FindGameObjectWithTag("Ataque Enemigo");
         weapon.SetActive(false);
         origin = transform.position + new Vector3(0, 1f, 0);
