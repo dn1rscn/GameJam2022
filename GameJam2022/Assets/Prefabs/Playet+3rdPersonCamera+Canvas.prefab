@@ -1262,7 +1262,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7136285389693683244}
-  m_LocalRotation: {x: 0.25020856, y: 0.000000016659078, z: -0.0000000043051833, w: 0.968192}
+  m_LocalRotation: {x: 0.25020856, y: -0.000000016659083, z: 0.000000004305185, w: 0.968192}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2943,19 +2943,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1897407325861834707, guid: 7c1a556e5fed70c42af3922e95f1903f, type: 3}
   m_PrefabInstance: {fileID: 4882498051468042116}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1078261209724418235
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6455610942880084055}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 185cbeb5631cccc4fa599d4b73cfaeff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  vfxDisparo: {fileID: 548812191924950523}
 --- !u!136 &792540011
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -2970,6 +2957,19 @@ CapsuleCollider:
   m_Height: 4
   m_Direction: 1
   m_Center: {x: 0, y: 0.95, z: 0}
+--- !u!114 &1078261209724418235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6455610942880084055}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 185cbeb5631cccc4fa599d4b73cfaeff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vfxDisparo: {fileID: 548812191924950523}
 --- !u!1001 &5180770987683722148
 PrefabInstance:
   m_ObjectHideFlags: 0
