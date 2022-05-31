@@ -19,15 +19,20 @@ public class ControlPlayer : MonoBehaviour
     bool disparo, apuntar, esquivar, mouse;
     public bool canMove = false;
 
+    [Header("Movimiento")]
     public float velocidad, velocidadGiro, velocidadEsquivar, fuerzaRetroceso;
     float turnSmothTime = 0.1f, turnSmoothVelocity;
     float camRayLength = 100f;
     int floorMask;
     public int vida = 2;
+    public float radioCancelacionJoystick;
+    public float ejeX;
+    public float ejeY;
 
     public Transform firePoint;
     //public float fuerza;
 
+    [Header("Apuntar")]
     public LineRenderer lineApuntar;
     public GameObject arma;
     GameObject geometria_Arma;
@@ -39,7 +44,7 @@ public class ControlPlayer : MonoBehaviour
     public LayerMask whatIsGround;
     public float fuerzaCaida;
 
-    [Header("recolectables")]
+    [Header("Recolectables")]
     public int energia;
     public int municion;
 
@@ -143,6 +148,7 @@ public class ControlPlayer : MonoBehaviour
             //playerRigidbody.velocity = Vector3.up * -fuerzaCaida;
             playerRigidbody.AddForce(Vector3.down * fuerzaCaida, ForceMode.Force);
         }
+
         //DETECTAMOS EL INPUT
         InputSystem.onActionChange += (obj, change) =>
         {
@@ -163,7 +169,22 @@ public class ControlPlayer : MonoBehaviour
         {
             Vector3 m = Vector3.zero;
             Vector3 direction = Vector3.zero;
-            direction = new Vector3(movimiento.x, 0.0f, movimiento.y)/*.normalized*/;
+            //Anulamos el joystick de movimiento si los valores que recoge son menores del valor "Radio de inactividad" en cualquier sentido
+           
+
+            if (movimiento.x >= radioCancelacionJoystick || movimiento.x <= -radioCancelacionJoystick)
+            {
+                ejeX = movimiento.x;
+            }
+            else ejeX = 0.0f;
+
+            if (movimiento.y >= radioCancelacionJoystick || movimiento.y <= -radioCancelacionJoystick)
+            {
+                ejeY = movimiento.y;
+            }
+            else ejeY = 0.0f;
+
+            direction = new Vector3(ejeX, 0.0f, ejeY)/*.normalized*/;
             //giro sin apuntar
             if (direction.magnitude >= 0.1f && !apuntar)
             {
@@ -288,7 +309,7 @@ public class ControlPlayer : MonoBehaviour
     //ANIMACIONES***************************
     void Andar()
     {
-        scr_protaAnims.Andar(movimiento);
+        scr_protaAnims.Andar(new Vector3 (ejeX,0,ejeY));
     }
     void AndarOff()
     {
@@ -298,10 +319,15 @@ public class ControlPlayer : MonoBehaviour
 
     void Correr()
     {
-        scr_protaAnims.Correr();
+//        if (movimiento.x < -0.8f || 0.8f < movimiento.x || movimiento.y < -0.8f || 0.8f < movimiento.y)
+  //      {
+            //velocidad = velocidad * 2.5f;
+            scr_protaAnims.Correr(new Vector3(ejeX, 0, ejeY));
+    //    }
     }
     void CorrerOff()
     {
+        //velocidad = velocidad / 2.5f;
         scr_protaAnims.CorrerOff();
     }
 

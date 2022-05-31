@@ -21,10 +21,15 @@ public class Prota_Anims : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        animatorPlayer.SetFloat("EjeX", Input.GetAxis("Horizontal"));
-        animatorPlayer.SetFloat("EjeZ", Input.GetAxis("Vertical"));
-
+        /*if(Input.GetAxis("Horizontal") >= 0.5f || Input.GetAxis("Horizontal") <= -0.5f)
+        {
+            animatorPlayer.SetFloat("EjeX", Input.GetAxis("Horizontal"));
+        }
+        if (Input.GetAxis("Vertical") >= 0.5f || Input.GetAxis("Vertical") <= -0.5f)
+        {
+            animatorPlayer.SetFloat("EjeZ", Input.GetAxis("Vertical"));
+        }
+        */
 
         /*
         animatorPlayer.SetFloat("EjeX", GameObject.FindGameObjectWithTag("Prota").GetComponent<Rigidbody>().velocity.x);
@@ -38,7 +43,7 @@ public class Prota_Anims : MonoBehaviour
         //andar = true;
         animatorPlayer.SetFloat("EjeX", direccion.x);
         animatorPlayer.SetFloat("EjeZ", direccion.z);
-        animatorPlayer.SetBool("andar",true);
+        if(direccion.x!=0 || direccion.z!=0) animatorPlayer.SetBool("andar",true);
     }
     public void AndarOff()
     {
@@ -46,9 +51,17 @@ public class Prota_Anims : MonoBehaviour
         animatorPlayer.SetBool("andar", false);
     }
 
-    public void Correr()
+    public void Correr(Vector3 direccion)
     {
-        animatorPlayer.SetBool("correr", true);
+        if (direccion.x < -0.8f || 0.8f < direccion.x || direccion.z < -0.8f || 0.8f < direccion.z)
+        {
+            if (direccion.x > 0.8) animatorPlayer.SetFloat("EjeX", direccion.x + 0.3f);
+            if (direccion.x < -0.8) animatorPlayer.SetFloat("EjeX", direccion.x - 0.3f);
+            if (direccion.z > 0.8) animatorPlayer.SetFloat("EjeX", direccion.z + 0.3f);
+            if (direccion.z < -0.8) animatorPlayer.SetFloat("EjeZ", direccion.z - 0.3f);
+            print("CORREMOS");
+            animatorPlayer.SetBool("correr", true);
+        }
     }
     public void CorrerOff()
     {
