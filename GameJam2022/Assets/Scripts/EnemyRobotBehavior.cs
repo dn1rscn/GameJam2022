@@ -10,6 +10,7 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     const int ANIMATION_CHASE = 2;
     const int ANIMATION_ATTACK = 3;
     const int ANIMATION_SLEEP = 4;
+    const int ANIMATION_DEATH = 5;
     abstract class State
     {
         public void Log(string msg)
@@ -335,6 +336,14 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
             var inst = Object.Instantiate(child, pos, Quaternion.identity);
             inst.SetActive(true);
         }
+
+        //Ejecutamos la animacion de Muerte
+        Animate(ANIMATION_SLEEP);
+        Invoke("DestroyEnemy",2.0f);
+    }
+
+    void DestroyEnemy()
+    {
         Destroy(gameObject);
     }
 
@@ -342,6 +351,7 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     {
         animator.SetInteger("state", id);
     }
+
     void IDamageAcceptor.TakeDamage(Damage incoming)
     {
         var damage = incoming.ApplyReduction(armorReduction);
@@ -371,6 +381,7 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     private Vector3 origin;
     public GameObject weapon;
     private GameObject electroBall;
+
     // Start is called before the first frame update
     void Start()
     {

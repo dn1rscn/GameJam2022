@@ -11,7 +11,10 @@ public class ControlUI : MonoBehaviour
     public GameObject uiKill;
     public GameObject cam;
 
+    //public bool testeo;
+
     ControlPlayer player;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -21,6 +24,7 @@ public class ControlUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         if (uiInicio.activeInHierarchy)
         {
             if (Input.anyKey)
@@ -28,6 +32,10 @@ public class ControlUI : MonoBehaviour
                 // print("key");
                 EmpezarJuego();
             }
+        }
+        else
+        {
+            EmpezarJuego();
         }
     }
 

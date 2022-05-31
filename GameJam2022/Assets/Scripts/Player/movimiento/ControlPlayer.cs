@@ -242,7 +242,7 @@ public class ControlPlayer : MonoBehaviour
         //DISPARO
         if (disparo && apuntar)
         {
-            if (municion <= 0) Debug.LogError("NO TIENES MUNICION");
+            if (municion <= 0) Debug.Log("NO TIENES MUNICION");
             else
             {
                 //TODO:hacer la llamada a la función de disparo
