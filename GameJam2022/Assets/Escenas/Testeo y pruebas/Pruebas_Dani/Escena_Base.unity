@@ -1834,6 +1834,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 659099414529214322, guid: 7c1a556e5fed70c42af3922e95f1903f, type: 3}
+      propertyPath: bulletSpeed
+      value: 7000
+      objectReference: {fileID: 0}
     - target: {fileID: 1897407325861834704, guid: 7c1a556e5fed70c42af3922e95f1903f, type: 3}
       propertyPath: cam
       value: 
@@ -1850,6 +1854,10 @@ PrefabInstance:
       propertyPath: uiHubMunicion
       value: 
       objectReference: {fileID: 1116284798}
+    - target: {fileID: 1897407325861834704, guid: 7c1a556e5fed70c42af3922e95f1903f, type: 3}
+      propertyPath: animatorPlayer
+      value: 
+      objectReference: {fileID: 2143114065}
     - target: {fileID: 1897407325861834704, guid: 7c1a556e5fed70c42af3922e95f1903f, type: 3}
       propertyPath: thirdPersonCamera
       value: 
@@ -1902,7 +1910,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1897407325133981054, guid: 7c1a556e5fed70c42af3922e95f1903f, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 7c1a556e5fed70c42af3922e95f1903f, type: 3}
 --- !u!114 &1364298617 stripped
 MonoBehaviour:
@@ -2761,7 +2770,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -2171841237006893387, guid: a86ddcb67fb35754ab8978496acb7503, type: 3}
       propertyPath: initialState
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3103367985474789261, guid: a86ddcb67fb35754ab8978496acb7503, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3019,3 +3028,8 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_ComponentOwner: {fileID: 1932936517}
+--- !u!95 &2143114065 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 1522840346747439567, guid: 7c1a556e5fed70c42af3922e95f1903f, type: 3}
+  m_PrefabInstance: {fileID: 1364298616}
+  m_PrefabAsset: {fileID: 0}
