@@ -24,34 +24,13 @@ MonoBehaviour:
     - model: {fileID: 8926484042661614555}
       id: 0
       isStickyNote: 0
-    - model: {fileID: 8926484042661614600}
-      id: 0
-      isStickyNote: 0
     - model: {fileID: 8926484042661614558}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614580}
       id: 0
       isStickyNote: 0
     - model: {fileID: 8926484042661614583}
       id: 0
       isStickyNote: 0
     - model: {fileID: 8926484042661614585}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614589}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614603}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614605}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614591}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614593}
       id: 0
       isStickyNote: 0
     - model: {fileID: 8926484042661614610}
@@ -86,15 +65,6 @@ MonoBehaviour:
     - model: {fileID: 8926484042661614674}
       id: 0
       isStickyNote: 0
-    - model: {fileID: 8926484042661614618}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614636}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614663}
-      id: 0
-      isStickyNote: 0
     - model: {fileID: 8926484042661614680}
       id: 0
       isStickyNote: 0
@@ -120,21 +90,6 @@ MonoBehaviour:
       isStickyNote: 0
     - model: {fileID: 8926484042661614610}
       id: 2
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614714}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614715}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614717}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614722}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614724}
-      id: 0
       isStickyNote: 0
   - title: Decal
     position:
@@ -183,7 +138,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7d4c867f6b72b714dbb5fd1780afe208, type: 3}
-  m_Name: Impacto
+  m_Name: Disparo
   m_EditorClassIdentifier: 
   m_UIIgnoredErrors: []
   m_Parent: {fileID: 0}
@@ -254,7 +209,7 @@ VisualEffectResource:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Impacto
+  m_Name: Disparo
   m_Graph: {fileID: 114350483966674976}
   m_Infos:
     m_RendererSettings:

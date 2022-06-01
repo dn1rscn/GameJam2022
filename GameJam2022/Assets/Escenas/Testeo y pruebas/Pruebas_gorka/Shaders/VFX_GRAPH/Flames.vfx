@@ -24,40 +24,13 @@ MonoBehaviour:
     - model: {fileID: 8926484042661614658}
       id: 0
       isStickyNote: 0
-    - model: {fileID: 8926484042661614660}
-      id: 0
-      isStickyNote: 0
     - model: {fileID: 8926484042661614662}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614677}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614683}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614694}
       id: 0
       isStickyNote: 0
     - model: {fileID: 8926484042661614697}
       id: 0
       isStickyNote: 0
-    - model: {fileID: 8926484042661614699}
-      id: 0
-      isStickyNote: 0
     - model: {fileID: 8926484042661614701}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614705}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614706}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614709}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614711}
       id: 0
       isStickyNote: 0
     - model: {fileID: 8926484042661614713}
@@ -208,8 +181,8 @@ VisualEffectResource:
       lightProbeUsage: 0
     m_CullingFlags: 3
     m_UpdateMode: 0
-    m_PreWarmDeltaTime: 0.05
-    m_PreWarmStepCount: 0
+    m_PreWarmDeltaTime: 0
+    m_PreWarmStepCount: 1
     m_InitialEventName: OnPlay
 --- !u!114 &8926484042661614555
 MonoBehaviour:

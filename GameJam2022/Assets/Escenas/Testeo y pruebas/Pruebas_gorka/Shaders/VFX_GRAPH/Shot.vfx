@@ -20,7 +20,7 @@ MonoBehaviour:
     x: 961
     y: -1934
     width: 1457
-    height: 1581
+    height: 1601
 --- !u!114 &114350483966674976
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -774,7 +774,7 @@ MonoBehaviour:
   m_InputSlots:
   - {fileID: 8926484042661615030}
   m_OutputSlots: []
-  m_Disabled: 1
+  m_Disabled: 0
   attribute: velocity
   Composition: 0
   Source: 0
@@ -3267,7 +3267,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEditor.VFX.Vector, Unity.VisualEffectGraph.Editor,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"vector":{"x":0.0,"y":0.0,"z":0.0}}'
+      m_SerializableObject: '{"vector":{"x":0.0,"y":0.0,"z":20.700000762939454}}'
     m_Space: 0
   m_Property:
     name: Velocity
