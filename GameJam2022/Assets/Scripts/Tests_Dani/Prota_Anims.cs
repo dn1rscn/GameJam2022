@@ -60,8 +60,9 @@ public class Prota_Anims : MonoBehaviour
             if (direccion.z > 0.8) animatorPlayer.SetFloat("EjeX", direccion.z + 0.3f);
             if (direccion.z < -0.8) animatorPlayer.SetFloat("EjeZ", direccion.z - 0.3f);
             print("CORREMOS");
-            animatorPlayer.SetBool("correr", true);
         }
+        animatorPlayer.SetBool("correr", true);
+
     }
     public void CorrerOff()
     {

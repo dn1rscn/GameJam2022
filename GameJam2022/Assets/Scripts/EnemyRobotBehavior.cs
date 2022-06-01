@@ -324,6 +324,13 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     void Die()
     {
         print("ENEMIGO MUERTO");
+        //Ejecutamos la animacion de Muerte
+        Animate(ANIMATION_SLEEP);
+        Invoke("DestroyEnemy",2.0f);
+    }
+
+    void DestroyEnemy()
+    {
         var loot = transform.Find("Loot");
         for (int i = 0; i < loot.childCount; i++)
         {
@@ -336,14 +343,6 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
             var inst = Object.Instantiate(child, pos, Quaternion.identity);
             inst.SetActive(true);
         }
-
-        //Ejecutamos la animacion de Muerte
-        Animate(ANIMATION_SLEEP);
-        Invoke("DestroyEnemy",2.0f);
-    }
-
-    void DestroyEnemy()
-    {
         Destroy(gameObject);
     }
 
