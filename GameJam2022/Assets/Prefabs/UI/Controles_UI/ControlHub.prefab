@@ -51,3 +51,4 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 70896d3a85f58d1438db5efce215f6e5, type: 3}
   - {fileID: 21300000, guid: 25c304ce0005ab442aad254edc86de8e, type: 3}
   - {fileID: 21300000, guid: c9e9e9255a791794293bf49193e70359, type: 3}
+  textoEnergia: {fileID: 0}

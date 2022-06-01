@@ -46,3 +46,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uiInicio: {fileID: 0}
   uiKill: {fileID: 0}
+  cam: {fileID: 0}
