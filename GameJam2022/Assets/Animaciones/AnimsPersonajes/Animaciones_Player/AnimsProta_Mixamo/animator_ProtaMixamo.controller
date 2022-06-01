@@ -958,6 +958,12 @@ AnimatorStateTransition:
   - m_ConditionMode: 1
     m_ConditionEvent: correr
     m_EventTreshold: 0
+  - m_ConditionMode: 3
+    m_ConditionEvent: EjeX
+    m_EventTreshold: 0.4
+  - m_ConditionMode: 3
+    m_ConditionEvent: EjeZ
+    m_EventTreshold: 0.4
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 6222193324561482965}
   m_Solo: 0

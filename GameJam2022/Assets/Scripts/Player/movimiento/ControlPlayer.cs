@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Cinemachine;
+using UnityEngine.SceneManagement;
+
 
 public class ControlPlayer : MonoBehaviour
 {
@@ -315,8 +317,7 @@ public class ControlPlayer : MonoBehaviour
     {
         scr_protaAnims.AndarOff();
     }
-
-
+    
     void Correr()
     {
 //        if (movimiento.x < -0.8f || 0.8f < movimiento.x || movimiento.y < -0.8f || 0.8f < movimiento.y)
@@ -342,16 +343,17 @@ public class ControlPlayer : MonoBehaviour
         scr_protaAnims.ApuntarOff();
     }
 
-
-    void Esquivar()
+/*    void Esquivar()
     {
         esquivar = true;
         animatorPlayer.Play("Anim_PruebaEsquivar");
     }
+  
     void esquivarOff()
     {
         esquivar = false;
     }
+    */
 
     //************************************
     private void OnTriggerStay(Collider other)
@@ -437,7 +439,21 @@ public class ControlPlayer : MonoBehaviour
 
     void activarUIMuerte()
     {
-        uiKill.SetActive(true);
+        //**Activar menu de muerte
+        //uiKill.SetActive(true);
+
+        //**Recargar escena**
+        //Scene scene = SceneManager.GetActiveScene();
+        //SceneManager.LoadScene(0);
+
+        //Recuperar Vidas y habilitar movimiento directamente
+        vida = 2;
+        HabilitarMovimiento();
+        animatorPlayer.Play("Idle_01");
+        scr_controlSFX.sfx_ReiniciarNivel();
+        Time.timeScale = 1.0f;
+
+
     }
 
     public void HabilitarMovimiento()

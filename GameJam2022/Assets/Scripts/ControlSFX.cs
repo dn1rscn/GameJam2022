@@ -51,6 +51,12 @@ public class ControlSFX : MonoBehaviour
         Canvas.GetComponent<Animator>().Play("Anim_Muerte_Canvas");
     }
 
+    public void sfx_ReiniciarNivel()
+    {
+        Canvas.GetComponent<Animator>().Play("Anim_Canvas_Standby");
+
+    }
+
 
     // Update is called once per frame
     void Update()
