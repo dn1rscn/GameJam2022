@@ -325,7 +325,8 @@ public class EnemyRobotBehavior : MonoBehaviour, IDamageAcceptor, ITriggerEnterL
     {
         print("ENEMIGO MUERTO");
         //Ejecutamos la animacion de Muerte
-        Animate(ANIMATION_SLEEP);
+        animator.Play("Muerte");
+        //Animate(ANIMATION_SLEEP);
         Invoke("DestroyEnemy",2.0f);
     }
 
