@@ -87,13 +87,14 @@ public class ControlPlayer : MonoBehaviour
             lightning.GetComponent<IShooting>()
         };
 
+        
+
     }
     private void Awake()
     {
         floorMask = LayerMask.GetMask("Floor");
         print("iniciamos");
         playerRigidbody = GetComponent<Rigidbody>();
-        //var thirdPersonCamera = GameObject.Find("Third Person Camera").GetComponent<CinemachineFreeLook>().m_XAxis.m_MaxSpeed = 300;
 
         if (GameObject.FindGameObjectWithTag("Prota_Anims").GetComponent<Prota_Anims>())
         {
@@ -143,6 +144,8 @@ public class ControlPlayer : MonoBehaviour
 
     void Update()
     {
+        if (apuntar) GameObject.Find("Third Person Camera_Cerca").GetComponentInChildren<CinemachineFreeLook>().m_YAxis.Value = 0.5f;
+        else GameObject.Find("Third Person Camera_Cerca").GetComponentInChildren<CinemachineFreeLook>().m_YAxis.Value = 1f;
         isGrounded = Physics.Raycast(transform.position, -Vector3.up, checkRatius, whatIsGround);
         if(isGrounded == false)
         {
@@ -186,9 +189,9 @@ public class ControlPlayer : MonoBehaviour
             }
             else ejeY = 0.0f;
 
-            direction = new Vector3(ejeX, 0.0f, ejeY)/*.normalized*/;
+            direction = new Vector3(-ejeX, 0.0f, -ejeY)/*.normalized*/;
             //giro sin apuntar
-            if (direction.magnitude >= 0.1f && !apuntar)
+            if (direction.magnitude >= 0.1f&&!apuntar)
             {
                 float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
                 float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmothTime);
@@ -228,12 +231,14 @@ public class ControlPlayer : MonoBehaviour
             }
             else//GIRO CON EL MANDO
             {
-                Vector2 dirGiro = new Vector2(rotate.x, rotate.y).normalized;
+                /*Vector2 dirGiro = new Vector2(rotate.x, 0).normalized;
                 if (dirGiro.magnitude >= 0.1f)
                 {
                     float targetAngleG = Mathf.Atan2(dirGiro.x, dirGiro.y) * Mathf.Rad2Deg;
                     transform.rotation = Quaternion.Euler(0f, targetAngleG, 0f);
-                }
+                }*/
+                Vector2 r = new Vector2(0, rotate.x) * velocidadGiro * Time.deltaTime;
+                transform.Rotate(r, Space.Self);
             }
         }
 
