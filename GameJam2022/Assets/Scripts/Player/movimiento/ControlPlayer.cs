@@ -38,6 +38,7 @@ public class ControlPlayer : MonoBehaviour
     public LineRenderer lineApuntar;
     public GameObject arma;
     GameObject geometria_Arma;
+    float valor;
 
     [Header("Grounded")]
     public bool isGrounded;
@@ -144,8 +145,22 @@ public class ControlPlayer : MonoBehaviour
 
     void Update()
     {
-        if (apuntar) GameObject.Find("Third Person Camera_Cerca").GetComponentInChildren<CinemachineFreeLook>().m_YAxis.Value = 0.5f;
-        else GameObject.Find("Third Person Camera_Cerca").GetComponentInChildren<CinemachineFreeLook>().m_YAxis.Value = 1f;
+        if (apuntar)
+        {
+            if (GameObject.Find("Third Person Camera_Cerca").GetComponentInChildren<CinemachineFreeLook>().m_YAxis.Value >= 0.5f)
+            {
+                /*valor += 0.5f * Time.deltaTime;
+                print(valor);*/
+                GameObject.Find("Third Person Camera_Cerca").GetComponentInChildren<CinemachineFreeLook>().m_YAxis.Value -= Time.deltaTime * 2;
+            }
+        }
+        else
+        {
+            if(GameObject.Find("Third Person Camera_Cerca").GetComponentInChildren<CinemachineFreeLook>().m_YAxis.Value <= 1f)
+            {
+                GameObject.Find("Third Person Camera_Cerca").GetComponentInChildren<CinemachineFreeLook>().m_YAxis.Value += Time.deltaTime * 2;
+            }
+        }
         isGrounded = Physics.Raycast(transform.position, -Vector3.up, checkRatius, whatIsGround);
         if(isGrounded == false)
         {
@@ -189,7 +204,7 @@ public class ControlPlayer : MonoBehaviour
             }
             else ejeY = 0.0f;
 
-            direction = new Vector3(-ejeX, 0.0f, -ejeY)/*.normalized*/;
+            direction = new Vector3(ejeX, 0.0f, ejeY)/*.normalized*/;
             //giro sin apuntar
             if (direction.magnitude >= 0.1f&&!apuntar)
             {
@@ -218,16 +233,17 @@ public class ControlPlayer : MonoBehaviour
             }*/
             if (mouse) //GIRO CON EL MOUSE
             {
-                Ray camRay = cam.ScreenPointToRay(Input.mousePosition);
+                /*Ray camRay = cam.ScreenPointToRay(Input.mousePosition);
                 RaycastHit floorHit;
-                if (Physics.Raycast(camRay, out floorHit, camRayLength, floorMask))
+                if (Physics.Raycast(camRay, out floorHit, camRayLength))
                 {
                     Vector3 playerToMouse = floorHit.point - transform.position;
                     playerToMouse.y = 0;
 
                     var rotation = Quaternion.LookRotation(playerToMouse);
                     playerRigidbody.MoveRotation(rotation);
-                }
+                }*/
+                velocidadGiro = 40;
             }
             else//GIRO CON EL MANDO
             {
@@ -237,9 +253,11 @@ public class ControlPlayer : MonoBehaviour
                     float targetAngleG = Mathf.Atan2(dirGiro.x, dirGiro.y) * Mathf.Rad2Deg;
                     transform.rotation = Quaternion.Euler(0f, targetAngleG, 0f);
                 }*/
+                velocidadGiro = 150;
+            }
                 Vector2 r = new Vector2(0, rotate.x) * velocidadGiro * Time.deltaTime;
                 transform.Rotate(r, Space.Self);
-            }
+            //}
         }
 
         //APUNTAR
@@ -286,7 +304,7 @@ public class ControlPlayer : MonoBehaviour
                     scr_controlSFX.sfx_Disparo();
 
                     //Shake camara
-                    cameraNoise = GameObject.Find("Third Person Camera").GetComponentInChildren<CinemachineBasicMultiChannelPerlin>();
+                    cameraNoise = GameObject.Find("Third Person Camera_Cerca").GetComponentInChildren<CinemachineBasicMultiChannelPerlin>();
                     cameraNoise.m_AmplitudeGain = 3;
                     cameraNoise.m_FrequencyGain = 0.5f;
                     Invoke("pararShakeCamara", 0.5f);
@@ -308,7 +326,7 @@ public class ControlPlayer : MonoBehaviour
     void pararShakeCamara()
     {
         // print("PararShake");
-        cameraNoise = GameObject.Find("Third Person Camera").GetComponentInChildren<CinemachineBasicMultiChannelPerlin>();
+        cameraNoise = GameObject.Find("Third Person Camera_Cerca").GetComponentInChildren<CinemachineBasicMultiChannelPerlin>();
         cameraNoise.m_AmplitudeGain = 0;
         cameraNoise.m_FrequencyGain = 0;
     }
@@ -427,7 +445,7 @@ public class ControlPlayer : MonoBehaviour
             canMove = false;
             playerInputActions.Player.Disable();
             //ShakeCamaraMuerte
-            cameraNoise = GameObject.Find("Third Person Camera").GetComponentInChildren<CinemachineBasicMultiChannelPerlin>();
+            cameraNoise = GameObject.Find("Third Person Camera_Cerca").GetComponentInChildren<CinemachineBasicMultiChannelPerlin>();
             cameraNoise.m_AmplitudeGain = 3;
             cameraNoise.m_FrequencyGain = 0.4f;
             Invoke("pararShakeCamara", 0.5f);
