@@ -12,6 +12,7 @@ public class ControlPlayer : MonoBehaviour
     public Animator animatorPlayer;
     private Rigidbody playerRigidbody;
     public Camera cam;
+    public Transform camPos;
     public CinemachineFreeLook thirdPersonCamera;
     private CinemachineBasicMultiChannelPerlin cameraNoise;
     LootSystem lootSystem;
@@ -189,8 +190,9 @@ public class ControlPlayer : MonoBehaviour
         {
             Vector3 m = Vector3.zero;
             Vector3 direction = Vector3.zero;
+            Vector3 moveDir = Vector3.zero;
             //Anulamos el joystick de movimiento si los valores que recoge son menores del valor "Radio de inactividad" en cualquier sentido
-           
+
 
             if (movimiento.x >= radioCancelacionJoystick || movimiento.x <= -radioCancelacionJoystick)
             {
@@ -206,15 +208,16 @@ public class ControlPlayer : MonoBehaviour
 
             direction = new Vector3(ejeX, 0.0f, ejeY)/*.normalized*/;
             //giro sin apuntar
-            if (direction.magnitude >= 0.1f&&!apuntar)
+            if (direction.magnitude >= 0.1f/*&&!apuntar*/)
             {
-                float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+                float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + camPos.eulerAngles.y;
                 float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmothTime);
                 transform.rotation = Quaternion.Euler(0f, angle, 0f);
+                moveDir = Quaternion.Euler(0f, targetAngle, 0f)*Vector3.forward;
             }
             m = direction * velocidad * Time.deltaTime;
             //transform.Translate(m, Space.World);
-            playerRigidbody.velocity = direction*velocidad;
+            playerRigidbody.velocity = moveDir*velocidad;
         }
 
         //giro al apuntar
@@ -255,8 +258,8 @@ public class ControlPlayer : MonoBehaviour
                 }*/
                 velocidadGiro = 150;
             }
-                Vector2 r = new Vector2(0, rotate.x) * velocidadGiro * Time.deltaTime;
-                transform.Rotate(r, Space.Self);
+                /*Vector2 r = new Vector2(0, rotate.x) * velocidadGiro * Time.deltaTime;
+                transform.Rotate(r, Space.Self);*/
             //}
         }
 
